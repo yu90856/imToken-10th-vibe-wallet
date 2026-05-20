@@ -8,3 +8,4 @@ ios/VibeWallet/Config/Secrets.plist
 ios/build/
 ios/**/DerivedData/
 *.ipa
+**/xcuserdata/

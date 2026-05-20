@@ -127,7 +127,13 @@ final class TokenCoreBridge: NSObject {
         }
     }
 
+    /// base64 字元集不含 `"`、`\`，可直接嵌入 JS 字串（勿用 JSONSerialization 包 String）。
+    private nonisolated static func pushWasmChunkScript(_ base64Chunk: String) -> String {
+        "window.__pushWasmChunk(\"\(base64Chunk)\");"
+    }
+
     private func bootWasmChunked(_ base64: String, webView: WKWebView) {
+        TokenCoreConsole.log("bootWasmChunked v2（直接注入 base64，無 JSONSerialization）")
         webView.evaluateJavaScript("window.__wasmChunks=[];") { _, _ in
             let chunkSize = 400_000
             var start = base64.startIndex
@@ -149,15 +155,8 @@ final class TokenCoreBridge: NSObject {
                 ) ?? base64.endIndex
                 let chunk = String(base64[start..<end])
                 start = end
-                // JSONSerialization 不接受頂層 Swift String；JSONEncoder 會產出帶跳脫的 JSON 字串字面量
-                guard let chunkData = try? JSONEncoder().encode(chunk),
-                      let chunkLiteral = String(data: chunkData, encoding: .utf8) else {
-                    Task { @MainActor in
-                        self.failWarmup("WASM 分塊編碼失敗")
-                    }
-                    return
-                }
-                webView.evaluateJavaScript("window.__pushWasmChunk(\(chunkLiteral));") { _, error in
+                let script = Self.pushWasmChunkScript(chunk)
+                webView.evaluateJavaScript(script) { _, error in
                     if let error {
                         Task { @MainActor in
                             self.failWarmup("WASM 分塊失敗：\(error.localizedDescription)")
