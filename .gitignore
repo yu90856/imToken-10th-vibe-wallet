@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.local
+.env
+.env.*
+ios/VibeWallet/Config/Secrets.plist
+ios/build/
+ios/**/DerivedData/
+*.ipa

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Token Core</title>
+</head>
+<body>
+  <script type="module">
+    import { initSync, create_keystore, derive_accounts, export_mnemonic } from "./tcx_wasm.js";
+
+    function post(msg) {
+      window.webkit?.messageHandlers?.tokenCore?.postMessage(msg);
+    }
+
+    function wasmBytesFromBase64Chunks(chunks) {
+      const binary = atob(chunks.join(""));
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    function installRunTokenCore() {
+      window.__runTokenCore = async function (id, op, payloadJson) {
+        try {
+          const payload =
+            payloadJson && typeof payloadJson === "object"
+              ? payloadJson
+              : payloadJson
+                ? JSON.parse(payloadJson)
+                : {};
+          let result;
+          switch (op) {
+            case "createKeystore": {
+              const param = { password: payload.password, network: payload.network || "TESTNET" };
+              if (payload.mnemonic) param.mnemonic = payload.mnemonic;
+              result = create_keystore(JSON.stringify(param));
+              break;
+            }
+            case "exportMnemonic": {
+              result = export_mnemonic(
+                JSON.stringify({
+                  keystoreJson: payload.keystoreJson,
+                  key: payload.password,
+                })
+              );
+              break;
+            }
+            case "deriveAccounts": {
+              result = derive_accounts(JSON.stringify(payload.derivationRequest));
+              break;
+            }
+            case "createWallet": {
+              const param = { password: payload.password, network: payload.network || "TESTNET" };
+              const keystoreJSON = create_keystore(JSON.stringify(param));
+              const exportRaw = export_mnemonic(
+                JSON.stringify({ keystoreJson: keystoreJSON, key: payload.password })
+              );
+              const exportJson = JSON.parse(exportRaw);
+              const derivationRequest = {
+                keystoreJson: keystoreJSON,
+                key: payload.password,
+                derivations: payload.derivations,
+              };
+              const accountsRaw = derive_accounts(JSON.stringify(derivationRequest));
+              result = JSON.stringify({
+                keystoreJSON,
+                mnemonic: exportJson.mnemonic,
+                accountsRaw,
+              });
+              break;
+            }
+            case "importWallet": {
+              const param = {
+                password: payload.password,
+                network: payload.network || "TESTNET",
+                mnemonic: payload.mnemonic,
+              };
+              const keystoreJSON = create_keystore(JSON.stringify(param));
+              const derivationRequest = {
+                keystoreJson: keystoreJSON,
+                key: payload.password,
+                derivations: payload.derivations,
+              };
+              const accountsRaw = derive_accounts(JSON.stringify(derivationRequest));
+              result = JSON.stringify({ keystoreJSON, accountsRaw });
+              break;
+            }
+            default:
+              throw new Error("unknown op: " + op);
+          }
+          post({ id, ok: true, result });
+        } catch (e) {
+          post({ id, ok: false, error: String(e?.message || e) });
+        }
+      };
+
+      post({ type: "ready" });
+    }
+
+    function bootFromBytes(bytes) {
+      initSync(bytes.buffer);
+      installRunTokenCore();
+    }
+
+    /** 單次注入（較小 WASM） */
+    window.__bootTokenCore = function (base64Wasm) {
+      try {
+        bootFromBytes(wasmBytesFromBase64Chunks([base64Wasm]));
+      } catch (e) {
+        post({ type: "error", error: String(e?.message || e) });
+      }
+    };
+
+    /** 分塊注入（~2MB+ WASM） */
+    window.__wasmChunks = [];
+    window.__pushWasmChunk = function (chunk) {
+      window.__wasmChunks.push(chunk);
+    };
+    window.__bootTokenCoreChunked = function () {
+      try {
+        const bytes = wasmBytesFromBase64Chunks(window.__wasmChunks);
+        window.__wasmChunks = [];
+        bootFromBytes(bytes);
+      } catch (e) {
+        post({ type: "error", error: String(e?.message || e) });
+      }
+    };
+
+    post({ type: "pageReady" });
+  </script>
+</body>
+</html>

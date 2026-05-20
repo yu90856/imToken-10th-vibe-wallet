@@ -1,0 +1,814 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000010000000000000001 /* VibeWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* VibeWalletApp.swift */; };
+		A10000010000000000000002 /* PortfolioSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* PortfolioSummary.swift */; };
+		A10000010000000000000003 /* SovereigntyStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* SovereigntyStatus.swift */; };
+		A10000010000000000000004 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* HomeViewModel.swift */; };
+		A10000010000000000000005 /* MockHomeDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* MockHomeDataService.swift */; };
+		A10000010000000000000006 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* AppTheme.swift */; };
+		A10000010000000000000007 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* HomeView.swift */; };
+		A10000010000000000000008 /* AssetBalanceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* AssetBalanceCard.swift */; };
+		A1000001000000000000000A /* SovereigntyDefenseCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* SovereigntyDefenseCard.swift */; };
+		A1000001000000000000000B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* Assets.xcassets */; };
+		A1000001000000000000000D /* HoldingAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* HoldingAsset.swift */; };
+		A10000010000000000000011 /* PortfolioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* PortfolioDetailView.swift */; };
+		A10000010000000000000012 /* SovereigntyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* SovereigntyDetailView.swift */; };
+		A10000010000000000000013 /* HomeRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* HomeRoute.swift */; };
+		A10000010000000000000014 /* MarketToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* MarketToken.swift */; };
+		A10000010000000000000015 /* SwapQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* SwapQuote.swift */; };
+		A10000010000000000000016 /* MockMarketDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* MockMarketDataService.swift */; };
+		A10000010000000000000017 /* MarketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* MarketViewModel.swift */; };
+		A10000010000000000000018 /* SwapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* SwapViewModel.swift */; };
+		A10000010000000000000019 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000019 /* MainTabView.swift */; };
+		A1000001000000000000001A /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001A /* MarketView.swift */; };
+		A1000001000000000000001B /* MarketTokenRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001B /* MarketTokenRow.swift */; };
+		A1000001000000000000001C /* SwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001C /* SwapView.swift */; };
+		A1000001000000000000001D /* SwapTokenPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001D /* SwapTokenPickerSheet.swift */; };
+		A1000001000000000000001E /* ExploreDapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001E /* ExploreDapp.swift */; };
+		A1000001000000000000001F /* MockExploreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001F /* MockExploreDataService.swift */; };
+		A10000010000000000000020 /* AssetsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* AssetsViewModel.swift */; };
+		A10000010000000000000021 /* AssetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000021 /* AssetsView.swift */; };
+		A10000010000000000000022 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000022 /* ExploreView.swift */; };
+		A10000010000000000000023 /* SwapTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000023 /* SwapTabView.swift */; };
+		A10000010000000000000024 /* AppNavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000024 /* AppNavigationModel.swift */; };
+		A10000010000000000000025 /* SubpageNavigationToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000025 /* SubpageNavigationToolbar.swift */; };
+		A10000010000000000000026 /* TokenLogoCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000026 /* TokenLogoCatalog.swift */; };
+		A10000010000000000000027 /* TokenLogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000027 /* TokenLogoView.swift */; };
+		A1000001000000000000002C /* ChainConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000002D /* ChainConfig.swift */; };
+		A1000001000000000000002D /* WalletAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000002E /* WalletAccount.swift */; };
+		A1000001000000000000002E /* WalletKeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000002F /* WalletKeychainStore.swift */; };
+		A10000010000000000000030 /* WalletSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000031 /* WalletSession.swift */; };
+		A10000010000000000000036 /* TokenCoreBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000036 /* TokenCoreBridge.swift */; };
+		A10000010000000000000037 /* TokenCoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000037 /* TokenCoreService.swift */; };
+		A10000010000000000000038 /* token_core_host.html in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000038 /* token_core_host.html */; };
+		A10000010000000000000039 /* tcx_wasm.js in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000039 /* tcx_wasm.js */; };
+		A1000001000000000000003A /* tcx_wasm_bg.wasm in Resources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000003A /* tcx_wasm_bg.wasm */; };
+		A10000010000000000000031 /* WalletOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000032 /* WalletOnboardingView.swift */; };
+		A10000010000000000000032 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000033 /* RootView.swift */; };
+		A10000010000000000000034 /* BNBChainBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000035 /* BNBChainBadge.swift */; };
+		A1000001000000000000003B /* TokenCoreWebHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000003B /* TokenCoreWebHost.swift */; };
+		A1000001000000000000003D /* TokenCoreSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000003D /* TokenCoreSchemeHandler.swift */; };
+		A1000001000000000000003E /* ChainRPCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000003E /* ChainRPCClient.swift */; };
+		A1000001000000000000003F /* TestnetBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000003F /* TestnetBanner.swift */; };
+		A10000010000000000000040 /* WalletDeckBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000040 /* WalletDeckBar.swift */; };
+		A10000010000000000000041 /* NotebookFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000041 /* NotebookFont.swift */; };
+		A10000010000000000000042 /* NotebookPaperBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000042 /* NotebookPaperBackground.swift */; };
+		A10000010000000000000043 /* SketchIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000043 /* SketchIcon.swift */; };
+		A10000010000000000000044 /* NotebookAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000044 /* NotebookAppearance.swift */; };
+		A10000010000000000000045 /* SecuritySettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000045 /* SecuritySettingsStore.swift */; };
+		A10000010000000000000046 /* TransactionAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000046 /* TransactionAuthService.swift */; };
+		A10000010000000000000047 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000047 /* SettingsView.swift */; };
+		A10000010000000000000048 /* TransactionPINEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000048 /* TransactionPINEntrySheet.swift */; };
+		A10000010000000000000049 /* PasskeySecureStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000049 /* PasskeySecureStatusView.swift */; };
+		A1000001000000000000004A /* CryptoHotNewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004A /* CryptoHotNewsItem.swift */; };
+		A1000001000000000000004B /* MockCryptoNewsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004B /* MockCryptoNewsService.swift */; };
+		A1000001000000000000004C /* TokenTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004C /* TokenTransaction.swift */; };
+		A1000001000000000000004D /* MockTokenTransactionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004D /* MockTokenTransactionService.swift */; };
+		A1000001000000000000004E /* HotNewsStickyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004E /* HotNewsStickyCard.swift */; };
+		A1000001000000000000004F /* TokenTransactionHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004F /* TokenTransactionHistoryView.swift */; };
+		A10000010000000000000050 /* WalletRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000050 /* WalletRoute.swift */; };
+		A10000010000000000000051 /* DuressModeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000051 /* DuressModeController.swift */; };
+		A10000010000000000000052 /* MockDuressWalletData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000052 /* MockDuressWalletData.swift */; };
+		A10000010000000000000053 /* AppLockOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000053 /* AppLockOverlay.swift */; };
+		A10000010000000000000054 /* DecoyWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000054 /* DecoyWalletView.swift */; };
+		A10000010000000000000055 /* WalletTransferSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000055 /* WalletTransferSheet.swift */; };
+		A10000010000000000000056 /* DecoyRestrictedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000056 /* DecoyRestrictedTabView.swift */; };
+		A10000010000000000000059 /* DuressFakeErrorOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000059 /* DuressFakeErrorOverlay.swift */; };
+		A10000010000000000000060 /* CoinGeckoMarketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000060 /* CoinGeckoMarketService.swift */; };
+		A10000010000000000000061 /* CryptoNewsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000061 /* CryptoNewsService.swift */; };
+		A10000010000000000000062 /* DAppBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000062 /* DAppBrowserView.swift */; };
+		A10000010000000000000063 /* ContactRecoveryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000063 /* ContactRecoveryStore.swift */; };
+		A10000010000000000000064 /* HackathonIntegrationCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000064 /* HackathonIntegrationCheck.swift */; };
+		A10000010000000000000065 /* IntegrationCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000065 /* IntegrationCheckView.swift */; };
+		A10000010000000000000066 /* ContactRecoverySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000066 /* ContactRecoverySetupView.swift */; };
+		A10000010000000000000067 /* ContactRecoveryUnlockSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000067 /* ContactRecoveryUnlockSheet.swift */; };
+		A10000010000000000000068 /* DeckRulerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000068 /* DeckRulerBackground.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000010000000000000001 /* VibeWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWalletApp.swift; sourceTree = "<group>"; };
+		A20000010000000000000002 /* PortfolioSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioSummary.swift; sourceTree = "<group>"; };
+		A20000010000000000000003 /* SovereigntyStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SovereigntyStatus.swift; sourceTree = "<group>"; };
+		A20000010000000000000004 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		A20000010000000000000005 /* MockHomeDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHomeDataService.swift; sourceTree = "<group>"; };
+		A20000010000000000000006 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		A20000010000000000000007 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A20000010000000000000008 /* AssetBalanceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetBalanceCard.swift; sourceTree = "<group>"; };
+		A2000001000000000000000A /* SovereigntyDefenseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SovereigntyDefenseCard.swift; sourceTree = "<group>"; };
+		A2000001000000000000000B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000001000000000000000D /* HoldingAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoldingAsset.swift; sourceTree = "<group>"; };
+		A20000010000000000000011 /* PortfolioDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000012 /* SovereigntyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SovereigntyDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000013 /* HomeRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRoute.swift; sourceTree = "<group>"; };
+		A20000010000000000000014 /* MarketToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketToken.swift; sourceTree = "<group>"; };
+		A20000010000000000000015 /* SwapQuote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapQuote.swift; sourceTree = "<group>"; };
+		A20000010000000000000016 /* MockMarketDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMarketDataService.swift; sourceTree = "<group>"; };
+		A20000010000000000000017 /* MarketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketViewModel.swift; sourceTree = "<group>"; };
+		A20000010000000000000018 /* SwapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapViewModel.swift; sourceTree = "<group>"; };
+		A20000010000000000000019 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		A2000001000000000000001A /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketView.swift; sourceTree = "<group>"; };
+		A2000001000000000000001B /* MarketTokenRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketTokenRow.swift; sourceTree = "<group>"; };
+		A2000001000000000000001C /* SwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapView.swift; sourceTree = "<group>"; };
+		A2000001000000000000001D /* SwapTokenPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapTokenPickerSheet.swift; sourceTree = "<group>"; };
+		A2000001000000000000001E /* ExploreDapp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreDapp.swift; sourceTree = "<group>"; };
+		A2000001000000000000001F /* MockExploreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExploreDataService.swift; sourceTree = "<group>"; };
+		A20000010000000000000020 /* AssetsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetsViewModel.swift; sourceTree = "<group>"; };
+		A20000010000000000000021 /* AssetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000022 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
+		A20000010000000000000023 /* SwapTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapTabView.swift; sourceTree = "<group>"; };
+		A20000010000000000000024 /* AppNavigationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationModel.swift; sourceTree = "<group>"; };
+		A20000010000000000000025 /* SubpageNavigationToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubpageNavigationToolbar.swift; sourceTree = "<group>"; };
+		A20000010000000000000026 /* TokenLogoCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenLogoCatalog.swift; sourceTree = "<group>"; };
+		A20000010000000000000027 /* TokenLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenLogoView.swift; sourceTree = "<group>"; };
+		A2000001000000000000002D /* ChainConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainConfig.swift; sourceTree = "<group>"; };
+		A2000001000000000000002E /* WalletAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletAccount.swift; sourceTree = "<group>"; };
+		A2000001000000000000002F /* WalletKeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletKeychainStore.swift; sourceTree = "<group>"; };
+		A20000010000000000000031 /* WalletSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSession.swift; sourceTree = "<group>"; };
+		A20000010000000000000036 /* TokenCoreBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCoreBridge.swift; sourceTree = "<group>"; };
+		A20000010000000000000037 /* TokenCoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCoreService.swift; sourceTree = "<group>"; };
+		A20000010000000000000038 /* token_core_host.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = token_core_host.html; sourceTree = "<group>"; };
+		A20000010000000000000039 /* tcx_wasm.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = tcx_wasm.js; sourceTree = "<group>"; };
+		A2000001000000000000003A /* tcx_wasm_bg.wasm */ = {isa = PBXFileReference; lastKnownFileType = file; path = tcx_wasm_bg.wasm; sourceTree = "<group>"; };
+		A20000010000000000000032 /* WalletOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletOnboardingView.swift; sourceTree = "<group>"; };
+		A20000010000000000000033 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A20000010000000000000035 /* BNBChainBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNBChainBadge.swift; sourceTree = "<group>"; };
+		A2000001000000000000003B /* TokenCoreWebHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCoreWebHost.swift; sourceTree = "<group>"; };
+		A2000001000000000000003D /* TokenCoreSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCoreSchemeHandler.swift; sourceTree = "<group>"; };
+		A2000001000000000000003E /* ChainRPCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainRPCClient.swift; sourceTree = "<group>"; };
+		A2000001000000000000003F /* TestnetBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestnetBanner.swift; sourceTree = "<group>"; };
+		A20000010000000000000040 /* WalletDeckBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeckBar.swift; sourceTree = "<group>"; };
+		A20000010000000000000041 /* NotebookFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookFont.swift; sourceTree = "<group>"; };
+		A20000010000000000000042 /* NotebookPaperBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookPaperBackground.swift; sourceTree = "<group>"; };
+		A20000010000000000000043 /* SketchIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchIcon.swift; sourceTree = "<group>"; };
+		A20000010000000000000044 /* NotebookAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookAppearance.swift; sourceTree = "<group>"; };
+		A20000010000000000000045 /* SecuritySettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecuritySettingsStore.swift; sourceTree = "<group>"; };
+		A20000010000000000000046 /* TransactionAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionAuthService.swift; sourceTree = "<group>"; };
+		A20000010000000000000047 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000048 /* TransactionPINEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionPINEntrySheet.swift; sourceTree = "<group>"; };
+		A20000010000000000000049 /* PasskeySecureStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasskeySecureStatusView.swift; sourceTree = "<group>"; };
+		A2000001000000000000004A /* CryptoHotNewsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoHotNewsItem.swift; sourceTree = "<group>"; };
+		A2000001000000000000004B /* MockCryptoNewsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCryptoNewsService.swift; sourceTree = "<group>"; };
+		A2000001000000000000004C /* TokenTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTransaction.swift; sourceTree = "<group>"; };
+		A2000001000000000000004D /* MockTokenTransactionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTokenTransactionService.swift; sourceTree = "<group>"; };
+		A2000001000000000000004E /* HotNewsStickyCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotNewsStickyCard.swift; sourceTree = "<group>"; };
+		A2000001000000000000004F /* TokenTransactionHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTransactionHistoryView.swift; sourceTree = "<group>"; };
+		A20000010000000000000050 /* WalletRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletRoute.swift; sourceTree = "<group>"; };
+		A20000010000000000000051 /* DuressModeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuressModeController.swift; sourceTree = "<group>"; };
+		A20000010000000000000052 /* MockDuressWalletData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDuressWalletData.swift; sourceTree = "<group>"; };
+		A20000010000000000000053 /* AppLockOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockOverlay.swift; sourceTree = "<group>"; };
+		A20000010000000000000054 /* DecoyWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoyWalletView.swift; sourceTree = "<group>"; };
+		A20000010000000000000055 /* WalletTransferSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransferSheet.swift; sourceTree = "<group>"; };
+		A20000010000000000000056 /* DecoyRestrictedTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoyRestrictedTabView.swift; sourceTree = "<group>"; };
+		A20000010000000000000059 /* DuressFakeErrorOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuressFakeErrorOverlay.swift; sourceTree = "<group>"; };
+		A20000010000000000000060 /* CoinGeckoMarketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinGeckoMarketService.swift; sourceTree = "<group>"; };
+		A20000010000000000000061 /* CryptoNewsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoNewsService.swift; sourceTree = "<group>"; };
+		A20000010000000000000062 /* DAppBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DAppBrowserView.swift; sourceTree = "<group>"; };
+		A20000010000000000000063 /* ContactRecoveryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRecoveryStore.swift; sourceTree = "<group>"; };
+		A20000010000000000000064 /* HackathonIntegrationCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackathonIntegrationCheck.swift; sourceTree = "<group>"; };
+		A20000010000000000000065 /* IntegrationCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationCheckView.swift; sourceTree = "<group>"; };
+		A20000010000000000000066 /* ContactRecoverySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRecoverySetupView.swift; sourceTree = "<group>"; };
+		A20000010000000000000067 /* ContactRecoveryUnlockSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRecoveryUnlockSheet.swift; sourceTree = "<group>"; };
+		A20000010000000000000068 /* DeckRulerBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckRulerBackground.swift; sourceTree = "<group>"; };
+		A30000010000000000000001 /* VibeWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VibeWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000010000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000010000000000000002 /* VibeWallet */,
+				A50000010000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000010000000000000002 /* VibeWallet */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000001 /* VibeWalletApp.swift */,
+				A50000010000000000000004 /* Models */,
+				A50000010000000000000005 /* ViewModels */,
+				A50000010000000000000006 /* Services */,
+				A50000010000000000000007 /* Views */,
+				A50000010000000000000008 /* Design */,
+				A50000010000000000000018 /* Resources */,
+				A2000001000000000000000B /* Assets.xcassets */,
+			);
+			path = VibeWallet;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000010000000000000001 /* VibeWallet.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000002 /* PortfolioSummary.swift */,
+				A20000010000000000000003 /* SovereigntyStatus.swift */,
+				A2000001000000000000000D /* HoldingAsset.swift */,
+				A20000010000000000000014 /* MarketToken.swift */,
+				A20000010000000000000015 /* SwapQuote.swift */,
+				A2000001000000000000001E /* ExploreDapp.swift */,
+				A2000001000000000000002D /* ChainConfig.swift */,
+				A2000001000000000000002E /* WalletAccount.swift */,
+				A2000001000000000000004A /* CryptoHotNewsItem.swift */,
+				A2000001000000000000004C /* TokenTransaction.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000005 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000004 /* HomeViewModel.swift */,
+				A20000010000000000000017 /* MarketViewModel.swift */,
+				A20000010000000000000018 /* SwapViewModel.swift */,
+				A20000010000000000000020 /* AssetsViewModel.swift */,
+				A20000010000000000000024 /* AppNavigationModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000006 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000005 /* MockHomeDataService.swift */,
+				A20000010000000000000016 /* MockMarketDataService.swift */,
+				A2000001000000000000001F /* MockExploreDataService.swift */,
+				A20000010000000000000026 /* TokenLogoCatalog.swift */,
+				A2000001000000000000002F /* WalletKeychainStore.swift */,
+				A20000010000000000000031 /* WalletSession.swift */,
+				A2000001000000000000003E /* ChainRPCClient.swift */,
+				A20000010000000000000045 /* SecuritySettingsStore.swift */,
+				A20000010000000000000046 /* TransactionAuthService.swift */,
+				A2000001000000000000004B /* MockCryptoNewsService.swift */,
+				A2000001000000000000004D /* MockTokenTransactionService.swift */,
+				A20000010000000000000051 /* DuressModeController.swift */,
+				A20000010000000000000052 /* MockDuressWalletData.swift */,
+				A20000010000000000000060 /* CoinGeckoMarketService.swift */,
+				A20000010000000000000061 /* CryptoNewsService.swift */,
+				A20000010000000000000063 /* ContactRecoveryStore.swift */,
+				A20000010000000000000064 /* HackathonIntegrationCheck.swift */,
+				A50000010000000000000017 /* TokenCore */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000007 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A5000001000000000000000E /* Main */,
+				A50000010000000000000015 /* Root */,
+				A50000010000000000000016 /* Wallet */,
+				A50000010000000000000009 /* Home */,
+				A5000001000000000000000F /* Market */,
+				A50000010000000000000010 /* Swap */,
+				A50000010000000000000011 /* Explore */,
+				A50000010000000000000012 /* Assets */,
+				A5000001000000000000001B /* Wallet */,
+				A5000001000000000000000C /* Portfolio */,
+				A5000001000000000000000D /* Security */,
+				A5000001000000000000001A /* Settings */,
+				A5000001000000000000000A /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000008 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000006 /* AppTheme.swift */,
+				A20000010000000000000041 /* NotebookFont.swift */,
+				A20000010000000000000042 /* NotebookPaperBackground.swift */,
+				A20000010000000000000068 /* DeckRulerBackground.swift */,
+				A20000010000000000000043 /* SketchIcon.swift */,
+				A20000010000000000000044 /* NotebookAppearance.swift */,
+				A20000010000000000000025 /* SubpageNavigationToolbar.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000009 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000007 /* HomeView.swift */,
+				A20000010000000000000013 /* HomeRoute.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000000A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000008 /* AssetBalanceCard.swift */,
+				A2000001000000000000000A /* SovereigntyDefenseCard.swift */,
+				A20000010000000000000027 /* TokenLogoView.swift */,
+				A20000010000000000000035 /* BNBChainBadge.swift */,
+				A2000001000000000000003B /* TokenCoreWebHost.swift */,
+				A2000001000000000000003F /* TestnetBanner.swift */,
+				A20000010000000000000049 /* PasskeySecureStatusView.swift */,
+				A2000001000000000000004E /* HotNewsStickyCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000000C /* Portfolio */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000011 /* PortfolioDetailView.swift */,
+			);
+			path = Portfolio;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000000D /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000012 /* SovereigntyDetailView.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000001A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000047 /* SettingsView.swift */,
+				A20000010000000000000048 /* TransactionPINEntrySheet.swift */,
+				A20000010000000000000065 /* IntegrationCheckView.swift */,
+				A20000010000000000000066 /* ContactRecoverySetupView.swift */,
+				A20000010000000000000067 /* ContactRecoveryUnlockSheet.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000000E /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000019 /* MainTabView.swift */,
+				A20000010000000000000040 /* WalletDeckBar.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000000F /* Market */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000001A /* MarketView.swift */,
+				A2000001000000000000001B /* MarketTokenRow.swift */,
+			);
+			path = Market;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000010 /* Swap */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000001C /* SwapView.swift */,
+				A2000001000000000000001D /* SwapTokenPickerSheet.swift */,
+				A20000010000000000000023 /* SwapTabView.swift */,
+			);
+			path = Swap;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000011 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000022 /* ExploreView.swift */,
+				A20000010000000000000062 /* DAppBrowserView.swift */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000012 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000021 /* AssetsView.swift */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		A5000001000000000000001B /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000050 /* WalletRoute.swift */,
+				A2000001000000000000004F /* TokenTransactionHistoryView.swift */,
+				A20000010000000000000053 /* AppLockOverlay.swift */,
+				A20000010000000000000054 /* DecoyWalletView.swift */,
+				A20000010000000000000055 /* WalletTransferSheet.swift */,
+				A20000010000000000000056 /* DecoyRestrictedTabView.swift */,
+				A20000010000000000000059 /* DuressFakeErrorOverlay.swift */,
+			);
+			path = Wallet;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000015 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000033 /* RootView.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000016 /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000032 /* WalletOnboardingView.swift */,
+			);
+			path = Wallet;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000017 /* TokenCore */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000036 /* TokenCoreBridge.swift */,
+				A20000010000000000000037 /* TokenCoreService.swift */,
+				A2000001000000000000003D /* TokenCoreSchemeHandler.swift */,
+			);
+			path = TokenCore;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000018 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A50000010000000000000019 /* TokenCore */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000019 /* TokenCore */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000038 /* token_core_host.html */,
+				A20000010000000000000039 /* tcx_wasm.js */,
+				A2000001000000000000003A /* tcx_wasm_bg.wasm */,
+			);
+			path = TokenCore;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000010000000000000001 /* VibeWallet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000010000000000000003 /* Build configuration list for PBXNativeTarget "VibeWallet" */;
+			buildPhases = (
+				A70000010000000000000001 /* Sources */,
+				A40000010000000000000001 /* Frameworks */,
+				A70000010000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VibeWallet;
+			productName = VibeWallet;
+			productReference = A30000010000000000000001 /* VibeWallet.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A90000010000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					A60000010000000000000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A80000010000000000000001 /* Build configuration list for PBXProject "VibeWallet" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hant",
+			);
+			mainGroup = A50000010000000000000001;
+			productRefGroup = A50000010000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000010000000000000001 /* VibeWallet */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A70000010000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001000000000000000B /* Assets.xcassets in Resources */,
+				A10000010000000000000038 /* token_core_host.html in Resources */,
+				A10000010000000000000039 /* tcx_wasm.js in Resources */,
+				A1000001000000000000003A /* tcx_wasm_bg.wasm in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000001 /* VibeWalletApp.swift in Sources */,
+				A10000010000000000000002 /* PortfolioSummary.swift in Sources */,
+				A10000010000000000000003 /* SovereigntyStatus.swift in Sources */,
+				A10000010000000000000004 /* HomeViewModel.swift in Sources */,
+				A10000010000000000000005 /* MockHomeDataService.swift in Sources */,
+				A10000010000000000000006 /* AppTheme.swift in Sources */,
+				A10000010000000000000007 /* HomeView.swift in Sources */,
+				A10000010000000000000008 /* AssetBalanceCard.swift in Sources */,
+				A1000001000000000000000A /* SovereigntyDefenseCard.swift in Sources */,
+				A1000001000000000000000D /* HoldingAsset.swift in Sources */,
+				A10000010000000000000011 /* PortfolioDetailView.swift in Sources */,
+				A10000010000000000000012 /* SovereigntyDetailView.swift in Sources */,
+				A10000010000000000000013 /* HomeRoute.swift in Sources */,
+				A10000010000000000000014 /* MarketToken.swift in Sources */,
+				A10000010000000000000015 /* SwapQuote.swift in Sources */,
+				A10000010000000000000016 /* MockMarketDataService.swift in Sources */,
+				A10000010000000000000017 /* MarketViewModel.swift in Sources */,
+				A10000010000000000000018 /* SwapViewModel.swift in Sources */,
+				A10000010000000000000019 /* MainTabView.swift in Sources */,
+				A1000001000000000000001A /* MarketView.swift in Sources */,
+				A1000001000000000000001B /* MarketTokenRow.swift in Sources */,
+				A1000001000000000000001C /* SwapView.swift in Sources */,
+				A1000001000000000000001D /* SwapTokenPickerSheet.swift in Sources */,
+				A1000001000000000000001E /* ExploreDapp.swift in Sources */,
+				A1000001000000000000001F /* MockExploreDataService.swift in Sources */,
+				A10000010000000000000020 /* AssetsViewModel.swift in Sources */,
+				A10000010000000000000021 /* AssetsView.swift in Sources */,
+				A10000010000000000000022 /* ExploreView.swift in Sources */,
+				A10000010000000000000023 /* SwapTabView.swift in Sources */,
+				A10000010000000000000024 /* AppNavigationModel.swift in Sources */,
+				A10000010000000000000025 /* SubpageNavigationToolbar.swift in Sources */,
+				A10000010000000000000026 /* TokenLogoCatalog.swift in Sources */,
+				A10000010000000000000027 /* TokenLogoView.swift in Sources */,
+				A1000001000000000000002C /* ChainConfig.swift in Sources */,
+				A1000001000000000000002D /* WalletAccount.swift in Sources */,
+				A1000001000000000000002E /* WalletKeychainStore.swift in Sources */,
+				A10000010000000000000030 /* WalletSession.swift in Sources */,
+				A10000010000000000000036 /* TokenCoreBridge.swift in Sources */,
+				A10000010000000000000037 /* TokenCoreService.swift in Sources */,
+				A10000010000000000000031 /* WalletOnboardingView.swift in Sources */,
+				A10000010000000000000032 /* RootView.swift in Sources */,
+				A10000010000000000000034 /* BNBChainBadge.swift in Sources */,
+				A1000001000000000000003B /* TokenCoreWebHost.swift in Sources */,
+				A1000001000000000000003D /* TokenCoreSchemeHandler.swift in Sources */,
+				A1000001000000000000003E /* ChainRPCClient.swift in Sources */,
+				A1000001000000000000003F /* TestnetBanner.swift in Sources */,
+				A10000010000000000000040 /* WalletDeckBar.swift in Sources */,
+				A10000010000000000000041 /* NotebookFont.swift in Sources */,
+				A10000010000000000000042 /* NotebookPaperBackground.swift in Sources */,
+				A10000010000000000000043 /* SketchIcon.swift in Sources */,
+				A10000010000000000000044 /* NotebookAppearance.swift in Sources */,
+				A10000010000000000000045 /* SecuritySettingsStore.swift in Sources */,
+				A10000010000000000000046 /* TransactionAuthService.swift in Sources */,
+				A10000010000000000000047 /* SettingsView.swift in Sources */,
+				A10000010000000000000048 /* TransactionPINEntrySheet.swift in Sources */,
+				A10000010000000000000049 /* PasskeySecureStatusView.swift in Sources */,
+				A1000001000000000000004A /* CryptoHotNewsItem.swift in Sources */,
+				A1000001000000000000004B /* MockCryptoNewsService.swift in Sources */,
+				A1000001000000000000004C /* TokenTransaction.swift in Sources */,
+				A1000001000000000000004D /* MockTokenTransactionService.swift in Sources */,
+				A1000001000000000000004E /* HotNewsStickyCard.swift in Sources */,
+				A1000001000000000000004F /* TokenTransactionHistoryView.swift in Sources */,
+				A10000010000000000000050 /* WalletRoute.swift in Sources */,
+				A10000010000000000000051 /* DuressModeController.swift in Sources */,
+				A10000010000000000000052 /* MockDuressWalletData.swift in Sources */,
+				A10000010000000000000053 /* AppLockOverlay.swift in Sources */,
+				A10000010000000000000054 /* DecoyWalletView.swift in Sources */,
+				A10000010000000000000055 /* WalletTransferSheet.swift in Sources */,
+				A10000010000000000000056 /* DecoyRestrictedTabView.swift in Sources */,
+				A10000010000000000000059 /* DuressFakeErrorOverlay.swift in Sources */,
+				A10000010000000000000060 /* CoinGeckoMarketService.swift in Sources */,
+				A10000010000000000000061 /* CryptoNewsService.swift in Sources */,
+				A10000010000000000000062 /* DAppBrowserView.swift in Sources */,
+				A10000010000000000000063 /* ContactRecoveryStore.swift in Sources */,
+				A10000010000000000000064 /* HackathonIntegrationCheck.swift in Sources */,
+				A10000010000000000000065 /* IntegrationCheckView.swift in Sources */,
+				A10000010000000000000066 /* ContactRecoverySetupView.swift in Sources */,
+				A10000010000000000000067 /* ContactRecoveryUnlockSheet.swift in Sources */,
+				A10000010000000000000068 /* DeckRulerBackground.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AA0000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA0000010000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vibe Wallet";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "使用 Face ID 確認交換與簽名操作，並展示硬體級主權狀態。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vibe.wallet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vibe Wallet";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "使用 Face ID 確認交換與簽名操作，並展示硬體級主權狀態。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vibe.wallet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80000010000000000000001 /* Build configuration list for PBXProject "VibeWallet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000001 /* Debug */,
+				AA0000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000010000000000000003 /* Build configuration list for PBXNativeTarget "VibeWallet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000003 /* Debug */,
+				AA0000010000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A90000010000000000000001 /* Project object */;
+}
