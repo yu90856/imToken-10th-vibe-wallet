@@ -12,6 +12,16 @@ open ios/VibeWallet.xcodeproj
 
 首次啟動若無本機 keystore → **建立／匯入錢包**（Token Core + Sepolia 地址）。
 
+## API 金鑰（勿提交 Git）
+
+公開倉庫**不含** `Config/Secrets.plist`（已在 `.gitignore`）。Clone 後若需 Bitrefill 搜尋等，請在本機自行建立：
+
+```bash
+cp ios/VibeWallet/Config/Secrets.plist.example ios/VibeWallet/Config/Secrets.plist
+```
+
+填入 `BITREFILL_API_KEY` 等（見 example 註解）。**Sepolia Puffer 演示質押**走鏈上 `VibePufferDemoVault`，不依賴 Bitrefill API。
+
 ## 實機閃退除錯
 
 請用 **USB + Xcode Run** 查看 Console 日誌，步驟見 [DEVICE_DEBUG.md](DEVICE_DEBUG.md)。
