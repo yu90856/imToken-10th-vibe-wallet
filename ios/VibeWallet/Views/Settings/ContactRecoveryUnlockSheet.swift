@@ -75,6 +75,7 @@ struct ContactRecoveryUnlockSheet: View {
                 }
             }
         }
+        .vibePresentedScreen()
     }
 
     private var fieldBackground: some View {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AssetBalanceCard: View {
     let portfolio: PortfolioSummary
+    var topHoldings: [HoldingAsset] = []
     @Environment(\.colorScheme) private var colorScheme
 
     private var isPositive: Bool { portfolio.change24hPercent >= 0 }
@@ -14,7 +15,7 @@ struct AssetBalanceCard: View {
                         Text("總資產")
                             .notebookHeadline(17)
                     }
-                    .foregroundStyle(AppTheme.ink.opacity(0.7))
+                    .foregroundStyle(AppTheme.secondaryInk(for: colorScheme))
                     Spacer()
                     BNBChainBadge(compact: true)
                         .font(.caption2.weight(.medium))
@@ -27,7 +28,7 @@ struct AssetBalanceCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(portfolio.formattedTotal)
                         .font(NotebookFont.largeAmount(40))
-                        .foregroundStyle(AppTheme.ink)
+                        .foregroundStyle(AppTheme.ink(for: colorScheme))
                         .minimumScaleFactor(0.7)
                         .lineLimit(1)
 
@@ -48,8 +49,20 @@ struct AssetBalanceCard: View {
                 Divider().opacity(colorScheme == .dark ? 0.2 : 0.5)
 
                 HStack(spacing: 16) {
-                    MiniStat(tokenId: "eth", symbol: "ETH", value: "—")
-                    MiniStat(tokenId: "usdc", symbol: "USDC", value: "—")
+                    if topHoldings.isEmpty {
+                        MiniStat(tokenId: "eth", symbol: "ETH", value: "—")
+                        MiniStat(tokenId: "usdc", symbol: "USDC", value: "—")
+                    } else {
+                        ForEach(topHoldings) { holding in
+                            MiniStat(
+                                tokenId: holding.id,
+                                symbol: holding.symbol,
+                                imageURL: holding.imageURL,
+                                value: holding.balance,
+                                subtitle: holding.formattedValue
+                            )
+                        }
+                    }
                 }
         }
         .padding(20)
@@ -130,13 +143,28 @@ private struct ChangeBadge: View {
 private struct MiniStat: View {
     let tokenId: String
     let symbol: String
+    var imageURL: String? = nil
     let value: String
+    var subtitle: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            TokenLogoView(tokenId: tokenId, symbol: symbol, size: 28)
+            TokenLogoView(
+                tokenId: tokenId,
+                symbol: symbol,
+                imageURL: imageURL,
+                size: 32,
+                showChainBadge: false
+            )
             Text(value)
                 .notebookBody(14)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            if let subtitle {
+                Text(subtitle)
+                    .notebookCaption(10)
+                    .foregroundStyle(AppTheme.ink.opacity(0.45))
+            }
             Text(symbol)
                 .notebookCaption(11)
                 .foregroundStyle(AppTheme.ink.opacity(0.5))

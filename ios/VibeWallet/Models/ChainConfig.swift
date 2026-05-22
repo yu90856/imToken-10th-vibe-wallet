@@ -15,6 +15,7 @@ enum ChainConfig {
         symbol: "ETH",
         tokenLogoId: "eth",
         rpcURL: "https://eth.llamarpc.com",
+        backupRPCURLs: [],
         explorerURL: "https://etherscan.io",
         derivationPath: "m/44'/60'/0'/0/0",
         isTestnet: false,
@@ -28,15 +29,18 @@ enum ChainConfig {
         symbol: "ETH",
         tokenLogoId: "eth",
         rpcURL: "https://ethereum-sepolia-rpc.publicnode.com",
+        backupRPCURLs: [
+            "https://1rpc.io/sepolia",
+            "https://sepolia.drpc.org",
+        ],
         explorerURL: "https://sepolia.etherscan.io",
         derivationPath: "m/44'/60'/0'/0/0",
         isTestnet: true,
         coingeckoId: "ethereum"
     )
 
-    static var tokenCoreNetwork: String {
-        active.isTestnet ? "TESTNET" : "MAINNET"
-    }
+    /// tcx 錢包檔的 `network` 欄位（與 Sepolia 測試網無關）。固定 MAINNET，避免 TESTNET 推導出不同地址導致簽名帳戶餘額為 0。
+    static var tokenCoreNetwork: String { "MAINNET" }
 
     /// 不需主網 ETH 的 Sepolia 水龍頭（Google Cloud）
     static let testnetFaucetURL = URL(string: "https://cloud.google.com/application/web3/faucet/ethereum/sepolia")!
@@ -47,12 +51,6 @@ enum ChainConfig {
     ]
 }
 
-extension EVMChain {
-    var chainIdHex: String {
-        String(format: "0x%x", id)
-    }
-}
-
 struct EVMChain: Equatable {
     let id: Int
     let name: String
@@ -60,8 +58,24 @@ struct EVMChain: Equatable {
     let symbol: String
     let tokenLogoId: String
     let rpcURL: String
+    /// 額外廣播節點，降低單一 RPC 收錄失敗導致「幽靈 pending」
+    let backupRPCURLs: [String]
     let explorerURL: String
     let derivationPath: String
     let isTestnet: Bool
     let coingeckoId: String
+}
+
+extension EVMChain {
+    var chainIdHex: String {
+        String(format: "0x%x", id)
+    }
+
+    var broadcastRPCURLs: [String] {
+        var urls = [rpcURL]
+        for backup in backupRPCURLs where !urls.contains(backup) {
+            urls.append(backup)
+        }
+        return urls
+    }
 }

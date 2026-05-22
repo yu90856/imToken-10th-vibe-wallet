@@ -8,7 +8,20 @@ struct MarketView: View {
     var body: some View {
         @Bindable var appNavigation = appNavigation
         NavigationStack(path: $appNavigation.marketPath) {
-            VStack(spacing: 0) {
+            marketRoot
+                .navigationDestination(for: MarketRoute.self) { route in
+                    switch route {
+                    case .tokenDetail(let token):
+                        MarketTokenDetailView(token: token)
+                            .subpageNavigation(backTitle: "行情")
+                    }
+                }
+        }
+        .vibeNavigationPathAnimation(appNavigation.marketPath)
+    }
+
+    private var marketRoot: some View {
+        VStack(spacing: 0) {
                 searchBar
                 marketStatusBanner
                 segmentBanner
@@ -26,7 +39,6 @@ struct MarketView: View {
                         .padding(.top, 8)
                 }
             }
-        }
     }
 
     private var searchBar: some View {
@@ -159,7 +171,7 @@ struct MarketView: View {
                         .buttonStyle(.plain)
 
                         Button {
-                            appNavigation.openSwap(preselectedTo: token)
+                            appNavigation.marketPath.append(MarketRoute.tokenDetail(token))
                         } label: {
                             MarketTokenRowContent(token: token)
                         }

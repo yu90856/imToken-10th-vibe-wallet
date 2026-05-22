@@ -79,7 +79,7 @@ final class TokenCoreSchemeHandler: NSObject, WKURLSchemeHandler {
         return (response, data)
     }
 
-    static func loadBundledFile(named name: String) -> Data? {
+    nonisolated static func loadBundledFile(named name: String) -> Data? {
         let base = (name as NSString).deletingPathExtension
         let ext = (name as NSString).pathExtension
         if let url = Bundle.main.url(forResource: base, withExtension: ext, subdirectory: "TokenCore"),

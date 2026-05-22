@@ -2,8 +2,14 @@ import SwiftUI
 
 @main
 struct VibeWalletApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     init() {
-        NotebookAppearance.install()
+        MainActor.assumeIsolated {
+            NotebookAppearance.install()
+            WalletSession.shared.bootstrapIfNeeded()
+            AppLifecycleCoordinator.onAppLaunch()
+        }
     }
 
     var body: some Scene {

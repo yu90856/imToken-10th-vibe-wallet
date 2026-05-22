@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 /// 脅迫防護：解鎖後先進入假錢包；依序點 Deck「交換→交換→錢包→錢包」退出
+@MainActor
 @Observable
 final class DuressModeController {
     static let shared = DuressModeController()
@@ -22,7 +23,7 @@ final class DuressModeController {
     private(set) var fakeErrorPresented = false
     private(set) var fakeErrorSecondsLeft = 0
 
-    private init() {}
+    nonisolated private init() {}
 
     /// 僅「設定 → Face ID」決定是否前景上鎖；脅迫防護只影響解鎖後是否進假錢包
     var shouldLockOnForeground: Bool {

@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var showBiometryAlert = false
     @State private var biometryAlertMessage = ""
     @State private var showRemoveWalletConfirm = false
+    @State private var notificationStatusText = "檢查中…"
 
     var body: some View {
         ScrollView {
@@ -25,6 +26,7 @@ struct SettingsView: View {
                     walletSection
                 }
                 integrationCheckSection
+                notificationsSection
                 securitySection
                 contactRecoverySection
                 transactionSection
@@ -38,6 +40,7 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             biometryHint = TransactionAuthService.setupHint
+            Task { await refreshNotificationStatus() }
         }
         .alert("無法啟用生物辨識", isPresented: $showBiometryAlert) {
             Button("知道了", role: .cancel) {}
@@ -88,6 +91,58 @@ struct SettingsView: View {
             }
             .padding(16)
             .glassCard(cornerRadius: 16, variant: .pink)
+        }
+    }
+
+    private var notificationsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionLabel("通知")
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text(notificationStatusText)
+                    .notebookBody(14)
+                    .foregroundStyle(AppTheme.ink.opacity(0.75))
+
+                Text("· 「Vibe 購物」新增待辦且 Bitrefill 有貨時提醒\n· Sepolia 錢包收到或發出資產時提醒")
+                    .notebookCaption(12)
+                    .foregroundStyle(AppTheme.ink.opacity(0.55))
+
+                Button {
+                    Task {
+                        _ = await VibeNotificationService.requestAuthorizationIfNeeded()
+                        await refreshNotificationStatus()
+                    }
+                } label: {
+                    Text("允許通知")
+                        .notebookHeadline(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                Button {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    Text("開啟系統設定")
+                        .notebookCaption(13)
+                        .foregroundStyle(AppTheme.primary)
+                }
+            }
+            .padding(16)
+            .glassCard(cornerRadius: 16, variant: .yellow)
+        }
+    }
+
+    private func refreshNotificationStatus() async {
+        switch await VibeNotificationService.authorizationStatus() {
+        case .authorized, .provisional, .ephemeral:
+            notificationStatusText = "已允許推播"
+        case .denied:
+            notificationStatusText = "已關閉 · 請在系統設定中開啟"
+        case .notDetermined:
+            notificationStatusText = "尚未授權 · 點下方按鈕允許"
+        @unknown default:
+            notificationStatusText = "狀態未知"
         }
     }
 
@@ -314,7 +369,11 @@ struct SettingsView: View {
                 reason: "驗證以啟用 \(TransactionAuthService.biometryTypeName)"
             )
             security.faceIDEnabled = true
+            security.useFaceIDForTransactions = true
             biometryHint = nil
+            if let password = WalletSession.shared.signingPassword {
+                WalletBiometricUnlock.persistSigningPasswordIfEnabled(password)
+            }
         } catch {
             security.faceIDEnabled = false
             if let error = error as? LocalizedError, let msg = error.errorDescription {

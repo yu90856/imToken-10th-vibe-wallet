@@ -1,6 +1,6 @@
 import Foundation
 import OSLog
-import WebKit
+@preconcurrency import WebKit
 
 private let tokenCoreLog = Logger(subsystem: "com.vibe.wallet", category: "TokenCore")
 
@@ -17,8 +17,6 @@ enum TokenCoreConsole {
 @MainActor
 final class TokenCoreBridge: NSObject {
     static let shared = TokenCoreBridge()
-
-    private static let processPool = WKProcessPool()
     private static let entryURL = URL(string: "\(TokenCoreSchemeHandler.scheme)://local/token_core_host.html")!
 
     private var webView: WKWebView?
@@ -29,7 +27,7 @@ final class TokenCoreBridge: NSObject {
     private var readyWaiters: [CheckedContinuation<Void, Error>] = []
     private var callWaiters: [String: CheckedContinuation<String, Error>] = [:]
 
-    private override init() {
+    nonisolated private override init() {
         super.init()
     }
 
@@ -59,7 +57,6 @@ final class TokenCoreBridge: NSObject {
         TokenCoreConsole.log("開始初始化 WebView…")
 
         let config = WKWebViewConfiguration()
-        config.processPool = Self.processPool
         config.websiteDataStore = .nonPersistent()
         let controller = WKUserContentController()
         controller.add(self, name: "tokenCore")
@@ -87,18 +84,10 @@ final class TokenCoreBridge: NSObject {
         if let loadError { throw TokenCoreError.bridgeFailed(loadError) }
         if isReady { return }
 
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask { @MainActor in
-                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                    self.readyWaiters.append(continuation)
-                }
+        try await raceWithTimeout(seconds: 45) {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                self.readyWaiters.append(continuation)
             }
-            group.addTask {
-                try await Task.sleep(nanoseconds: 45_000_000_000)
-                throw TokenCoreError.bridgeFailed("Token Core 初始化逾時，請重新啟動 App")
-            }
-            try await group.next()
-            group.cancelAll()
         }
     }
 
@@ -118,7 +107,8 @@ final class TokenCoreBridge: NSObject {
         } else {
             let script = "window.__bootTokenCore('\(base64)');"
             webView.evaluateJavaScript(script) { _, error in
-                Task { @MainActor in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
                     if let error {
                         self.failWarmup("WASM 注入失敗：\(error.localizedDescription)")
                     }
@@ -135,38 +125,38 @@ final class TokenCoreBridge: NSObject {
     private func bootWasmChunked(_ base64: String, webView: WKWebView) {
         TokenCoreConsole.log("bootWasmChunked v2（直接注入 base64，無 JSONSerialization）")
         webView.evaluateJavaScript("window.__wasmChunks=[];") { _, _ in
-            let chunkSize = 400_000
-            var start = base64.startIndex
-            func pushNext() {
-                guard start < base64.endIndex else {
-                    webView.evaluateJavaScript("window.__bootTokenCoreChunked();") { _, error in
-                        Task { @MainActor in
-                            if let error {
-                                self.failWarmup("WASM 分塊注入失敗：\(error.localizedDescription)")
-                            }
-                        }
-                    }
-                    return
-                }
-                let end = base64.index(
-                    start,
-                    offsetBy: chunkSize,
-                    limitedBy: base64.endIndex
-                ) ?? base64.endIndex
-                let chunk = String(base64[start..<end])
-                start = end
-                let script = Self.pushWasmChunkScript(chunk)
-                webView.evaluateJavaScript(script) { _, error in
+            Task { @MainActor [weak self] in
+                self?.pushWasmChunks(from: base64.startIndex, base64: base64, webView: webView)
+            }
+        }
+    }
+
+    @MainActor
+    private func pushWasmChunks(from start: String.Index, base64: String, webView: WKWebView) {
+        guard start < base64.endIndex else {
+            webView.evaluateJavaScript("window.__bootTokenCoreChunked();") { _, error in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
                     if let error {
-                        Task { @MainActor in
-                            self.failWarmup("WASM 分塊失敗：\(error.localizedDescription)")
-                        }
-                    } else {
-                        pushNext()
+                        self.failWarmup("WASM 分塊注入失敗：\(error.localizedDescription)")
                     }
                 }
             }
-            pushNext()
+            return
+        }
+        let chunkSize = 400_000
+        let end = base64.index(start, offsetBy: chunkSize, limitedBy: base64.endIndex) ?? base64.endIndex
+        let chunk = String(base64[start..<end])
+        let script = Self.pushWasmChunkScript(chunk)
+        webView.evaluateJavaScript(script) { _, error in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                if let error {
+                    self.failWarmup("WASM 分塊失敗：\(error.localizedDescription)")
+                } else {
+                    self.pushWasmChunks(from: end, base64: base64, webView: webView)
+                }
+            }
         }
     }
 
@@ -181,37 +171,42 @@ final class TokenCoreBridge: NSObject {
             throw TokenCoreError.bridgeFailed("參數編碼失敗")
         }
 
-        return try await withThrowingTaskGroup(of: String.self) { group in
-            group.addTask { @MainActor in
-                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-                    self.callWaiters[id] = continuation
-                    let script = "window.__runTokenCore('\(id)', '\(op)', \(payloadJSON));"
-                    webView.evaluateJavaScript(script) { _, error in
-                        Task { @MainActor in
-                            if let error,
-                               let pending = self.callWaiters.removeValue(forKey: id) {
-                                pending.resume(
-                                    throwing: TokenCoreError.bridgeFailed(error.localizedDescription)
-                                )
-                            }
+        return try await raceWithTimeout(seconds: 90) {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
+                self.callWaiters[id] = continuation
+                let script = "window.__runTokenCore('\(id)', '\(op)', \(payloadJSON));"
+                webView.evaluateJavaScript(script) { _, error in
+                    Task { @MainActor [weak self] in
+                        guard let self else { return }
+                        if let error,
+                           let pending = self.callWaiters.removeValue(forKey: id) {
+                            pending.resume(
+                                throwing: TokenCoreError.bridgeFailed(error.localizedDescription)
+                            )
                         }
                     }
                 }
             }
-            group.addTask { @MainActor in
-                try await Task.sleep(nanoseconds: 90_000_000_000)
-                if let continuation = self.callWaiters.removeValue(forKey: id) {
-                    continuation.resume(
-                        throwing: TokenCoreError.bridgeFailed("\(op) 操作逾時，請稍後再試")
-                    )
-                }
-                throw TokenCoreError.bridgeFailed("\(op) 操作逾時，請稍後再試")
+        }
+    }
+
+    @MainActor
+    private func raceWithTimeout<T: Sendable>(
+        seconds: Double,
+        _ operation: @escaping @Sendable @MainActor () async throws -> T
+    ) async throws -> T {
+        let clock = ContinuousClock()
+        return try await withThrowingTaskGroup(of: T.self) { group in
+            group.addTask { try await operation() }
+            group.addTask {
+                try await clock.sleep(for: .seconds(seconds))
+                throw TokenCoreError.bridgeFailed("操作逾時，請稍後再試")
             }
-            guard let result = try await group.next() else {
+            guard let value = try await group.next() else {
                 throw TokenCoreError.bridgeFailed("Token Core 無回應")
             }
             group.cancelAll()
-            return result
+            return value
         }
     }
 
@@ -227,11 +222,21 @@ extension TokenCoreBridge: WKScriptMessageHandler {
         _ userContentController: WKUserContentController,
         didReceive message: WKScriptMessage
     ) {
-        guard message.name == "tokenCore",
-              let body = message.body as? [String: Any] else { return }
         Task { @MainActor in
-            handleMessage(body)
+            processScriptMessage(message)
         }
+    }
+
+    @MainActor
+    private func processScriptMessage(_ message: WKScriptMessage) {
+        guard message.name == "tokenCore" else { return }
+        handleScriptMessageBody(message.body)
+    }
+
+    @MainActor
+    private func handleScriptMessageBody(_ body: Any) {
+        guard let payload = body as? [String: Any] else { return }
+        handleMessage(payload)
     }
 
     private func handleMessage(_ body: [String: Any]) {

@@ -52,13 +52,26 @@ struct WalletView: View {
                     }
                 }
             }
-            .onAppear { viewModel.loadFromChainIfNeeded() }
+            .onAppear {
+                viewModel.attachSharedBalanceStore()
+                viewModel.applyCachedBalances()
+                viewModel.loadFromChainIfNeeded()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .walletBalancesDidChange)) { _ in
+                viewModel.reloadAfterWalletActivity()
+            }
+            .task(id: walletSession.account?.address) {
+                viewModel.attachSharedBalanceStore()
+                viewModel.applyCachedBalances()
+                viewModel.loadFromChainIfNeeded()
+            }
             .sheet(isPresented: $showSend) {
-                WalletTransferSheet(mode: .send, isDecoy: false)
+                WalletTransferSheet(mode: .send, holdings: viewModel.holdings, isDecoy: false)
             }
             .sheet(isPresented: $showReceive) {
-                WalletTransferSheet(mode: .receive, isDecoy: false)
+                WalletTransferSheet(mode: .receive, holdings: viewModel.holdings, isDecoy: false)
             }
+            .vibeNavigationPathAnimation(path)
         }
     }
 
@@ -152,7 +165,7 @@ struct WalletView: View {
                         } label: {
                             holdingRow(holding)
                         }
-                        .buttonStyle(CardPressStyle())
+                        .buttonStyle(VibeCardPressStyle())
                     }
                 }
             }
@@ -218,15 +231,6 @@ struct WalletView: View {
                 .padding(.horizontal, 4)
             TestnetBanner(address: walletSession.account?.address)
         }
-    }
-}
-
-private struct CardPressStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .opacity(configuration.isPressed ? 0.92 : 1)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 

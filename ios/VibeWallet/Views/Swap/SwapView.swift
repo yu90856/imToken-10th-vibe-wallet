@@ -2,13 +2,17 @@ import SwiftUI
 
 struct SwapView: View {
     @State private var viewModel: SwapViewModel
+    @Environment(WalletSession.self) private var walletSession
     @Environment(\.colorScheme) private var colorScheme
     @State private var pickerTarget: TokenPickerTarget?
     @State private var showSwapConfirm = false
     @State private var showPINAuth = false
     @State private var showPinNotSetAlert = false
+    @State private var showWalletPassword = false
     @State private var authErrorMessage: String?
+    @State private var swapResultMessage: String?
     private let showsSubpageNavigation: Bool
+    private let preselectedTo: MarketToken?
 
     enum TokenPickerTarget: Identifiable {
         case from
@@ -23,16 +27,27 @@ struct SwapView: View {
     }
 
     init(preselectedTo: MarketToken? = nil, showsSubpageNavigation: Bool = false) {
+        self.preselectedTo = preselectedTo
         self.showsSubpageNavigation = showsSubpageNavigation
         _viewModel = State(initialValue: SwapViewModel(preselectedTo: preselectedTo))
+    }
+
+    private var refreshTaskKey: String {
+        "\(walletSession.account?.address ?? "none")|\(preselectedTo?.id ?? "default")"
     }
 
     var body: some View {
         @Bindable var viewModel = viewModel
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                if ChainConfig.usesTestnet {
+                    sepoliaHintCard
+                }
                 swapCard
                 quoteSection
+                if let msg = viewModel.lastSwapMessage {
+                    swapResultCard(msg)
+                }
                 swapButton
             }
             .padding(20)
@@ -47,7 +62,7 @@ struct SwapView: View {
             SwapTokenPickerSheet(
                 title: target == .from ? "支付代幣" : "接收代幣",
                 tokens: target == .from
-                    ? viewModel.walletTokens
+                    ? viewModel.fromTokensForPicker
                     : viewModel.allReceivableTokens(),
                 selectedID: target == .from ? viewModel.fromToken?.id : viewModel.toToken?.id
             ) { token in
@@ -77,32 +92,120 @@ struct SwapView: View {
         } message: {
             Text(authErrorMessage ?? "")
         }
+        .sheet(isPresented: $showWalletPassword) {
+            WalletPasswordSheet(
+                onUnlocked: {
+                    showWalletPassword = false
+                    Task { await performSwap() }
+                },
+                onCancel: { showWalletPassword = false }
+            )
+        }
         .alert("確認交換", isPresented: $showSwapConfirm) {
             Button("取消", role: .cancel) {}
-            Button("我了解，繼續（示範）") {}
+            Button("確認並廣播") { continueAfterSwapConfirm() }
         } message: {
-            Text("此為 Mock 流程，不會廣播鏈上交易。正式版需你親自確認簽名。")
+            if viewModel.canExecuteOnChain {
+                Text("將在 Sepolia 廣播真實交易。請確認代幣對與數量無誤。")
+            } else {
+                Text(viewModel.swapDisabledReason ?? "無法執行鏈上交換")
+            }
+        }
+        .alert("交換", isPresented: Binding(
+            get: { swapResultMessage != nil },
+            set: { if !$0 { swapResultMessage = nil } }
+        )) {
+            Button("了解", role: .cancel) {}
+        } message: {
+            Text(swapResultMessage ?? "")
+        }
+        .task(id: refreshTaskKey) {
+            await viewModel.refreshTokens(preselectedTo: preselectedTo)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .walletBalancesDidChange)) { _ in
+            Task { await viewModel.refreshTokens(preselectedTo: preselectedTo) }
+        }
+    }
+
+    private var sepoliaHintCard: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Sepolia 鏈上交換")
+                .notebookHeadline(15)
+            Text("行情進入：USDT → 該幣種（CoinGecko 參考）。跨鏈資產會顯示「跨鏈橋」路徑；僅 ETH ↔ vUSDC / ETH → pufETH 可 Sepolia 鏈上廣播。")
+                .notebookCaption(12)
+                .foregroundStyle(AppTheme.ink.opacity(0.7))
+            if !SepoliaSwapDemoConfig.hasOnChainSwap {
+                Text("尚未配置 vUSDC 合約：執行 node scripts/setup-swap-sepolia.mjs")
+                    .notebookCaption(11)
+                    .foregroundStyle(AppTheme.warning)
+            }
+        }
+        .padding(14)
+        .glassCard(cornerRadius: 14, variant: .mint)
+    }
+
+    private func swapResultCard(_ message: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(message)
+                .notebookBody(14)
+                .foregroundStyle(AppTheme.positive)
+            if let hash = viewModel.lastTxHash,
+               let url = URL(string: "\(ChainConfig.active.explorerURL)/tx/\(hash)") {
+                Link("在 Etherscan 查看", destination: url)
+                    .font(.caption.weight(.semibold))
+            }
+        }
+        .padding(14)
+        .glassCard(cornerRadius: 14, variant: .yellow)
+    }
+
+    @MainActor
+    private func continueAfterSwapConfirm() {
+        guard walletSession.hasWallet, walletSession.account != nil else { return }
+        Task {
+            do {
+                switch try await SigningUnlockCoordinator.prepareForSigning(reason: "確認 Sepolia 鏈上交換") {
+                case .readyToSign:
+                    await performSwap()
+                case .needWalletPassword:
+                    showWalletPassword = true
+                }
+            } catch TransactionAuthError.pinRequired {
+                showPINAuth = true
+            } catch TransactionAuthError.pinNotSet {
+                showPinNotSetAlert = true
+            } catch {
+                if let error = error as? LocalizedError, let msg = error.errorDescription {
+                    authErrorMessage = msg
+                } else {
+                    authErrorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func performSwap() async {
+        guard let address = walletSession.account?.address,
+              let password = walletSession.signingPassword else {
+            showWalletPassword = true
+            return
+        }
+        do {
+            try await viewModel.executeSwap(walletAddress: address, walletPassword: password)
+            swapResultMessage = viewModel.lastSwapMessage
+        } catch {
+            swapResultMessage = error.localizedDescription
         }
     }
 
     @MainActor
     private func beginSwapPreview() async {
-        do {
-            try await TransactionAuthService.authenticateForTransaction(
-                reason: "確認預覽此筆交換"
-            )
-            showSwapConfirm = true
-        } catch TransactionAuthError.pinRequired {
-            showPINAuth = true
-        } catch TransactionAuthError.pinNotSet {
-            showPinNotSetAlert = true
-        } catch {
-            if let error = error as? LocalizedError, let msg = error.errorDescription {
-                authErrorMessage = msg
-            } else {
-                authErrorMessage = error.localizedDescription
-            }
+        guard viewModel.canExecuteOnChain else {
+            swapResultMessage = viewModel.swapDisabledReason ?? "此代幣對不支援 Sepolia 鏈上交換"
+            return
         }
+        showSwapConfirm = true
     }
 
     private var swapCard: some View {
@@ -195,7 +298,11 @@ struct SwapView: View {
                 "0.0",
                 text: Binding(
                     get: { amountText },
-                    set: onAmountChange
+                    set: { @Sendable newValue in
+                        MainActor.assumeIsolated {
+                            onAmountChange(newValue)
+                        }
+                    }
                 )
             )
             .keyboardType(.decimalPad)
@@ -242,7 +349,7 @@ struct SwapView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("MEV 防護")
                         .font(.subheadline.weight(.semibold))
-                    Text("降低被夾擊風險（示範開關）")
+                    Text("Sepolia 演示標記（不影響鏈上路由）")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -251,8 +358,16 @@ struct SwapView: View {
 
             quoteRow("服務手續費", viewModel.hasValidQuote ? viewModel.quote.serviceFee : "—")
 
-            if !viewModel.hasValidQuote {
-                Text("在上方「支付」或「接收」任一侧輸入數量即可試算。")
+            if viewModel.isReferenceQuoteOnly, viewModel.hasValidQuote {
+                Text("參考報價模式：可試算匯率，測試網不廣播 USDT 鏈上交易。")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.primary)
+            } else if let reason = viewModel.swapDisabledReason, viewModel.hasValidQuote {
+                Text(reason)
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.negative)
+            } else if !viewModel.hasValidQuote {
+                Text("在上方「支付」或「接收」輸入數量即可試算。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -274,24 +389,42 @@ struct SwapView: View {
     }
 
     private var swapButton: some View {
-        Button {
+        let canSwap = viewModel.hasValidQuote
+            && viewModel.canExecuteOnChain
+            && viewModel.swapDisabledReason == nil
+            && !viewModel.isSwapping
+
+        return Button {
             Task { await beginSwapPreview() }
         } label: {
-            Text("預覽交換")
-                .font(.headline.weight(.bold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .foregroundStyle(.white)
-                .background(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(
-                            viewModel.hasValidQuote
-                                ? AnyShapeStyle(AppTheme.heroGradient)
-                                : AnyShapeStyle(Color.gray.opacity(0.4))
-                        )
-                )
+            HStack {
+                if viewModel.isSwapping {
+                    ProgressView().tint(.white)
+                }
+                Text(swapButtonTitle)
+            }
+            .font(.headline.weight(.bold))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .foregroundStyle(.white)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        canSwap
+                            ? AnyShapeStyle(AppTheme.heroGradient)
+                            : AnyShapeStyle(Color.gray.opacity(0.4))
+                    )
+            )
         }
-        .disabled(!viewModel.hasValidQuote)
+        .disabled(!canSwap)
+    }
+
+    private var swapButtonTitle: String {
+        if viewModel.isSwapping { return "廣播中…" }
+        if viewModel.isReferenceQuoteOnly, viewModel.hasValidQuote {
+            return "參考報價（測試網不廣播）"
+        }
+        return ChainConfig.usesTestnet ? "確認交換（Sepolia）" : "預覽交換"
     }
 }
 

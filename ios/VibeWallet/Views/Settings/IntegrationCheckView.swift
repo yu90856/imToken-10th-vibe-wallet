@@ -8,6 +8,10 @@ struct IntegrationCheckView: View {
     @State private var results: [HackathonIntegrationCheck.Result] = []
     @State private var isRunning = false
     @State private var lastRunAt: Date?
+    @State private var expandedIDs: Set<String> = []
+    @State private var notificationTestMessage: String?
+    @State private var notificationTestBusy = false
+    @State private var widgetPreviewSnapshot = WidgetDataStore.load()
 
     private var passCount: Int { results.filter { $0.status == .pass }.count }
     private var failCount: Int { results.filter { $0.status == .fail }.count }
@@ -16,6 +20,10 @@ struct IntegrationCheckView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 summaryCard
+
+                notificationTestSection
+
+                widgetPreviewSection
 
                 Button {
                     Task { await runChecks() }
@@ -43,6 +51,10 @@ struct IntegrationCheckView: View {
                         .foregroundStyle(AppTheme.ink.opacity(0.5))
                 }
 
+                Text("點任一項目可展開，查看逐步檢測過程（含安全、惡意連結規則等）。")
+                    .notebookCaption(12)
+                    .foregroundStyle(AppTheme.ink.opacity(0.55))
+
                 ForEach(results) { item in
                     resultRow(item)
                 }
@@ -64,6 +76,81 @@ struct IntegrationCheckView: View {
                 await runChecks()
             }
         }
+    }
+
+    private var notificationTestSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("通知測試（獨立）")
+                .notebookHeadline(17)
+
+            Text("點下方按鈕後，約 5 秒會送出本地推播。請立刻按 Home 鍵回到 iPhone 桌面等待；點通知應跳轉到錢包或 Bitrefill 商店。")
+                .notebookBody(13)
+                .foregroundStyle(AppTheme.ink.opacity(0.65))
+
+            ForEach(NotificationTestBench.Kind.allCases) { kind in
+                Button {
+                    Task { await runNotificationTest(kind) }
+                } label: {
+                    HStack {
+                        Text(kind.title)
+                            .notebookHeadline(15)
+                        Spacer()
+                        if notificationTestBusy {
+                            ProgressView()
+                        }
+                    }
+                    .foregroundStyle(AppTheme.ink)
+                    .padding(.vertical, 10)
+                }
+                .buttonStyle(.plain)
+                .disabled(notificationTestBusy)
+
+                Text(kind.instruction)
+                    .notebookCaption(11)
+                    .foregroundStyle(AppTheme.ink.opacity(0.5))
+            }
+
+            if let notificationTestMessage {
+                Text(notificationTestMessage)
+                    .notebookCaption(12)
+                    .foregroundStyle(AppTheme.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .glassCard(cornerRadius: 16, variant: .pink)
+    }
+
+    private var widgetPreviewSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("桌面小工具預覽")
+                .notebookHeadline(17)
+
+            Text("Widget 需在實機主畫面長按 → 「+」→ 搜尋 Vibe Wallet → 選「Vibe 快覽」。Xcode 預覽請切換 scheme 為 VibeWalletWidgetExtension，或看下方模擬版面。")
+                .notebookBody(13)
+                .foregroundStyle(AppTheme.ink.opacity(0.65))
+
+            WidgetPreviewCard(
+                snapshot: widgetPreviewSnapshot.marketRows.isEmpty
+                    ? WidgetPreviewCard.sample
+                    : widgetPreviewSnapshot
+            )
+
+            Button {
+                Task {
+                    await WidgetSyncService.refreshFromApp()
+                    widgetPreviewSnapshot = WidgetDataStore.load()
+                }
+            } label: {
+                Text("同步 Widget 資料")
+                    .notebookHeadline(15)
+                    .foregroundStyle(AppTheme.primary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .glassCard(cornerRadius: 16, variant: .yellow)
     }
 
     private var summaryCard: some View {
@@ -92,24 +179,77 @@ struct IntegrationCheckView: View {
     }
 
     private func resultRow(_ item: HackathonIntegrationCheck.Result) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            statusIcon(item.status)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(item.title)
-                    .notebookHeadline(15)
+        let isExpanded = expandedIDs.contains(item.id)
+        return VStack(alignment: .leading, spacing: 0) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.22)) {
+                    if isExpanded {
+                        expandedIDs.remove(item.id)
+                    } else {
+                        expandedIDs.insert(item.id)
+                    }
+                }
+            } label: {
+                HStack(alignment: .top, spacing: 12) {
+                    statusIcon(item.status)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(item.title)
+                                .notebookHeadline(15)
+                                .foregroundStyle(AppTheme.ink)
+                            Spacer(minLength: 0)
+                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(AppTheme.ink.opacity(0.35))
+                        }
+                        Text(item.repo)
+                            .notebookCaption(11)
+                            .foregroundStyle(AppTheme.primary)
+                        Text(item.detail)
+                            .notebookCaption(12)
+                            .foregroundStyle(AppTheme.ink.opacity(0.6))
+                            .multilineTextAlignment(.leading)
+                    }
+                }
+                .padding(14)
+            }
+            .buttonStyle(.plain)
+
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(item.steps) { step in
+                        stepRow(step)
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.bottom, 14)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .glassCard(cornerRadius: 14)
+    }
+
+    private func stepRow(_ step: HackathonIntegrationCheck.CheckStep) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            stepIcon(step.status)
+                .font(.caption)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(step.title)
+                    .notebookBody(13)
+                    .fontWeight(.semibold)
                     .foregroundStyle(AppTheme.ink)
-                Text(item.repo)
+                Text(step.detail)
                     .notebookCaption(11)
-                    .foregroundStyle(AppTheme.primary)
-                Text(item.detail)
-                    .notebookCaption(12)
-                    .foregroundStyle(AppTheme.ink.opacity(0.6))
+                    .foregroundStyle(AppTheme.ink.opacity(0.58))
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }
-        .padding(14)
-        .glassCard(cornerRadius: 14)
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(AppTheme.ink.opacity(0.04))
+        )
     }
 
     @ViewBuilder
@@ -130,12 +270,35 @@ struct IntegrationCheckView: View {
         }
     }
 
+    @ViewBuilder
+    private func stepIcon(_ status: HackathonIntegrationCheck.CheckStep.StepStatus) -> some View {
+        switch status {
+        case .pass:
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(AppTheme.positive)
+        case .fail:
+            Image(systemName: "xmark.circle.fill")
+                .foregroundStyle(AppTheme.negative)
+        case .info:
+            Image(systemName: "circle")
+                .foregroundStyle(AppTheme.ink.opacity(0.3))
+        }
+    }
+
     @MainActor
     private func runChecks() async {
         isRunning = true
         results = await HackathonIntegrationCheck.runAll(hasWallet: walletSession.hasWallet)
         lastRunAt = Date()
         isRunning = false
+        widgetPreviewSnapshot = WidgetDataStore.load()
+    }
+
+    @MainActor
+    private func runNotificationTest(_ kind: NotificationTestBench.Kind) async {
+        notificationTestBusy = true
+        notificationTestMessage = await NotificationTestBench.schedule(kind)
+        notificationTestBusy = false
     }
 }
 

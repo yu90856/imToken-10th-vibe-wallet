@@ -26,13 +26,11 @@ struct TestnetBanner: View {
                     .truncationMode(.middle)
             }
 
-            Link(destination: ChainConfig.testnetFaucetURL) {
-                HStack(spacing: 6) {
-                    SketchIcon(kind: .drop, size: 16, color: AppTheme.primary)
-                    Text("領取 Sepolia ETH（Google Cloud）")
-                        .notebookCaption(12)
-                }
-            }
+            GoogleSepoliaFaucetButton(
+                address: address,
+                title: "領取 Sepolia ETH（Google Cloud）",
+                compact: true
+            )
 
             ForEach(Array(ChainConfig.testnetFaucetAlternates.enumerated()), id: \.offset) { index, url in
                 Link(destination: url) {

@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 /// 聯絡人解鎖：三組提示詞；Face ID 失敗時輸入其中兩組正確提示詞可解鎖，30 分鐘內不再上鎖
+@MainActor
 @Observable
 final class ContactRecoveryStore {
     static let shared = ContactRecoveryStore()

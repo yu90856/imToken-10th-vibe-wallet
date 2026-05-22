@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 enum NotebookAppearance {
+    @MainActor
     static func install() {
         let navTitle = UIFont(name: NotebookFont.titleName, size: 34)
             ?? UIFont.systemFont(ofSize: 34, weight: .bold)

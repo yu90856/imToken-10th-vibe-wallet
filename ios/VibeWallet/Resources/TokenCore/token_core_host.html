@@ -6,7 +6,7 @@
 </head>
 <body>
   <script type="module">
-    import { initSync, create_keystore, derive_accounts, export_mnemonic } from "./tcx_wasm.js";
+    import { initSync, create_keystore, derive_accounts, export_mnemonic, sign_tx } from "./tcx_wasm.js";
 
     function post(msg) {
       window.webkit?.messageHandlers?.tokenCore?.postMessage(msg);
@@ -69,6 +69,10 @@
                 mnemonic: exportJson.mnemonic,
                 accountsRaw,
               });
+              break;
+            }
+            case "signTx": {
+              result = sign_tx(JSON.stringify(payload));
               break;
             }
             case "importWallet": {

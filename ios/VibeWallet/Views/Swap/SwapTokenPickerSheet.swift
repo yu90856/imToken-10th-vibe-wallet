@@ -10,7 +10,9 @@ struct SwapTokenPickerSheet: View {
     @State private var query = ""
 
     private var filtered: [MarketToken] {
-        tokens.filter { $0.matchesSearch(query) }
+        SepoliaSwapTokenCatalog.sortForTokenPicker(
+            tokens.filter { $0.matchesSearch(query) }
+        )
     }
 
     var body: some View {
@@ -31,6 +33,11 @@ struct SwapTokenPickerSheet: View {
                             Text(token.shortContract)
                                 .font(.caption2.monospaced())
                                 .foregroundStyle(Color.secondary.opacity(0.8))
+                            if let balanceLabel = SepoliaSwapTokenCatalog.balanceLabel(for: token) {
+                                Text(balanceLabel)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(AppTheme.primary)
+                            }
                         }
                         Spacer()
                         if token.id == selectedID {
@@ -50,5 +57,6 @@ struct SwapTokenPickerSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
+        .vibePresentedScreen()
     }
 }

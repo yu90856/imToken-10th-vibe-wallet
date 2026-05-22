@@ -66,6 +66,21 @@ struct MarketToken: Identifiable, Equatable, Hashable {
         return "\(start)...\(end)"
     }
 
+    func with(walletBalance: Decimal?) -> MarketToken {
+        MarketToken(
+            id: id,
+            symbol: symbol,
+            name: name,
+            contractAddress: contractAddress,
+            priceUSD: priceUSD,
+            change24hPercent: change24hPercent,
+            volume24hUSD: volume24hUSD,
+            category: category,
+            walletBalance: walletBalance,
+            imageURL: imageURL
+        )
+    }
+
     func matchesSearch(_ query: String) -> Bool {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !q.isEmpty else { return true }

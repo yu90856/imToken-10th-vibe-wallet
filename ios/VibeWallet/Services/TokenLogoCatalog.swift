@@ -42,8 +42,23 @@ enum TokenLogoCatalog {
         coingeckoToTokenId[id] ?? id.replacingOccurrences(of: "-", with: "")
     }
 
+    /// 持倉／行情 id → 靜態圖示表 key（含鏈上持倉自訂 id）
+    static func resolveLogoTokenId(_ rawId: String) -> String {
+        switch rawId {
+        case "eth-native": return "eth"
+        case "puffer-pufeth": return "eth"
+        case "vibe-vusdc": return "usdc"
+        default:
+            let mapped = tokenId(fromCoingeckoId: rawId)
+            if urls[mapped] != nil { return mapped }
+            if urls[rawId] != nil { return rawId }
+            return mapped
+        }
+    }
+
     static func url(for tokenId: String) -> URL? {
-        if let raw = urls[tokenId] { return URL(string: raw) }
+        let key = resolveLogoTokenId(tokenId)
+        if let raw = urls[key] { return URL(string: raw) }
         return nil
     }
 

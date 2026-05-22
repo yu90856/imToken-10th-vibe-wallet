@@ -28,20 +28,26 @@ struct SketchIcon: View {
     var color: Color = AppTheme.ink
 
     var body: some View {
-        Canvas { context, canvasSize in
-            let rect = CGRect(origin: .zero, size: canvasSize)
-            let path = sketchPath(for: kind, in: rect)
-            context.stroke(
-                path,
-                with: .color(color),
-                style: StrokeStyle(
-                    lineWidth: max(1.6, size * 0.07),
-                    lineCap: .round,
-                    lineJoin: .round
-                )
-            )
+        Group {
+            if kind == .gear {
+                SketchGearIcon(size: size, color: color)
+            } else {
+                Canvas { context, canvasSize in
+                    let rect = CGRect(origin: .zero, size: canvasSize)
+                    let path = sketchPath(for: kind, in: rect)
+                    context.stroke(
+                        path,
+                        with: .color(color),
+                        style: StrokeStyle(
+                            lineWidth: max(1.6, size * 0.07),
+                            lineCap: .round,
+                            lineJoin: .round
+                        )
+                    )
+                }
+                .frame(width: size, height: size)
+            }
         }
-        .frame(width: size, height: size)
         .accessibilityLabel(kind.rawValue)
     }
 
@@ -110,18 +116,7 @@ struct SketchIcon: View {
             path.addLine(to: CGPoint(x: w * 0.58, y: h * 0.2))
 
         case .gear:
-            let c = CGPoint(x: w * 0.5, y: h * 0.5)
-            let r = min(w, h) * 0.22
-            path.addEllipse(in: CGRect(x: c.x - r * 0.55, y: c.y - r * 0.55, width: r * 1.1, height: r * 1.1))
-            for i in 0..<8 {
-                let angle = Double(i) * .pi / 4
-                let inner = r * 1.05
-                let outer = r * 1.55
-                let a1 = CGPoint(x: c.x + CGFloat(cos(angle)) * inner, y: c.y + CGFloat(sin(angle)) * inner)
-                let a2 = CGPoint(x: c.x + CGFloat(cos(angle)) * outer, y: c.y + CGFloat(sin(angle)) * outer)
-                path.move(to: a1)
-                path.addLine(to: a2)
-            }
+            break
 
         case .lock:
             let body = CGRect(x: w * 0.28, y: h * 0.44, width: w * 0.44, height: h * 0.44)
@@ -225,5 +220,88 @@ struct SketchIcon: View {
             path.addLine(to: CGPoint(x: body.minX + body.width * 0.35, y: body.maxY - body.height * 0.15))
         }
         return path
+    }
+}
+
+// MARK: - 手繪鉛筆風齒輪（附圖：描邊 + 斜線陰影）
+
+private struct SketchGearIcon: View {
+    let size: CGFloat
+    let color: Color
+
+    var body: some View {
+        Canvas { context, canvasSize in
+            let rect = CGRect(origin: .zero, size: canvasSize)
+            let outline = gearOutline(in: rect)
+            let stroke = StrokeStyle(
+                lineWidth: max(1.5, size * 0.065),
+                lineCap: .round,
+                lineJoin: .round
+            )
+
+            for hatch in gearHatchLines(in: rect) {
+                context.stroke(
+                    hatch,
+                    with: .color(color.opacity(0.32)),
+                    style: StrokeStyle(lineWidth: max(0.7, size * 0.028), lineCap: .round)
+                )
+            }
+
+            context.stroke(outline, with: .color(color), style: stroke)
+
+            let hubR = min(rect.width, rect.height) * 0.11
+            let hub = CGRect(
+                x: rect.midX - hubR,
+                y: rect.midY - hubR,
+                width: hubR * 2,
+                height: hubR * 2
+            )
+            context.stroke(Path(ellipseIn: hub), with: .color(color), style: stroke)
+
+            var spokes = Path()
+            let spokeLen = hubR * 1.35
+            spokes.move(to: CGPoint(x: rect.midX - spokeLen, y: rect.midY))
+            spokes.addLine(to: CGPoint(x: rect.midX + spokeLen, y: rect.midY))
+            spokes.move(to: CGPoint(x: rect.midX, y: rect.midY - spokeLen))
+            spokes.addLine(to: CGPoint(x: rect.midX, y: rect.midY + spokeLen))
+            context.stroke(spokes, with: .color(color.opacity(0.85)), style: stroke)
+        }
+        .frame(width: size, height: size)
+    }
+
+    private func gearOutline(in rect: CGRect) -> Path {
+        let c = CGPoint(x: rect.midX, y: rect.midY)
+        let outerR = min(rect.width, rect.height) * 0.42
+        let innerR = outerR * 0.72
+        let teeth = 8
+        var path = Path()
+
+        for i in 0..<(teeth * 2) {
+            let angle = (Double(i) / Double(teeth * 2)) * 2 * .pi - .pi / 2
+            let r = i.isMultiple(of: 2) ? outerR : innerR
+            let pt = CGPoint(
+                x: c.x + CGFloat(cos(angle)) * r,
+                y: c.y + CGFloat(sin(angle)) * r
+            )
+            if i == 0 { path.move(to: pt) } else { path.addLine(to: pt) }
+        }
+        path.closeSubpath()
+        return path
+    }
+
+    private func gearHatchLines(in rect: CGRect) -> [Path] {
+        let pad = min(rect.width, rect.height) * 0.2
+        let inner = rect.insetBy(dx: pad, dy: pad)
+        let spacing = max(2.5, size * 0.11)
+        var lines: [Path] = []
+        var y = inner.minY
+        while y < inner.maxY {
+            var p = Path()
+            p.move(to: CGPoint(x: inner.minX, y: y))
+            p.addLine(to: CGPoint(x: inner.maxX, y: y + inner.width * 0.22))
+            lines.append(p)
+            y += spacing
+        }
+        return lines
     }
 }

@@ -5,17 +5,19 @@ struct ExploreView: View {
     @State private var urlText = "https://app.uniswap.org"
     @State private var browserDestination: BrowserDestination?
     @State private var showNeedWallet = false
+    @State private var explorePath = NavigationPath()
+    @State private var blockedURLMessage: String?
     @Environment(\.colorScheme) private var colorScheme
 
     private let categories = MockExploreDataService().categories()
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $explorePath) {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
                     BNBChainBadge()
                     walletConnectCard
-                    sepoliaDappQuickCard
+                    integrationCheckCard
                     urlBar
                     ForEach(categories) { category in
                         categorySection(category)
@@ -24,7 +26,7 @@ struct ExploreView: View {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 16)
             }
-            .background(AppTheme.pageBackground(for: colorScheme).ignoresSafeArea())
+            .vibeNotebookPage(colorScheme: colorScheme, deckInset: false)
             .navigationTitle("探索")
             .navigationBarTitleDisplayMode(.large)
             .fullScreenCover(item: $browserDestination) { dest in
@@ -34,6 +36,27 @@ struct ExploreView: View {
                         walletAddress: address,
                         chainIdHex: ChainConfig.active.chainIdHex
                     )
+                    .vibePresentedScreen()
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            .navigationDestination(for: ExploreRoute.self) { route in
+                switch route {
+                case .pufferStaking:
+                    PufferStakingView()
+                case .bitrefillShop(let query, let previewProducts):
+                    BitrefillShopView(initialQuery: query, previewProducts: previewProducts) { productId in
+                        explorePath.append(ExploreRoute.bitrefillProduct(productId: productId))
+                    }
+                    .subpageNavigation(backTitle: "探索")
+                case .bitrefillProduct(let productId):
+                    BitrefillProductDetailView(productId: productId) { invoice in
+                        explorePath.append(ExploreRoute.bitrefillCheckout(invoice: invoice))
+                    }
+                    .subpageNavigation(backTitle: "商店")
+                case .bitrefillCheckout(let invoice):
+                    BitrefillCheckoutView(invoice: invoice)
+                        .subpageNavigation(backTitle: "確認")
                 }
             }
             .alert("請先建立錢包", isPresented: $showNeedWallet) {
@@ -41,49 +64,41 @@ struct ExploreView: View {
             } message: {
                 Text("需先建立或匯入錢包，才能連接 Sepolia Dapp。")
             }
+            .alert("已阻擋可疑連結", isPresented: Binding(
+                get: { blockedURLMessage != nil },
+                set: { if !$0 { blockedURLMessage = nil } }
+            )) {
+                Button("了解", role: .cancel) {}
+            } message: {
+                Text(blockedURLMessage ?? "")
+            }
+            .vibeNavigationPathAnimation(explorePath)
         }
     }
 
-    private var sepoliaDappQuickCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Sepolia 可測 Dapp")
-                .notebookHeadline(17)
-
-            Text("內建瀏覽器注入錢包，連上 Sepolia 後可測兌換、NFT 與領取測試 ETH。")
-                .notebookCaption(12)
-                .foregroundStyle(AppTheme.ink.opacity(0.6))
-
-            HStack(spacing: 8) {
-                quickDappButton(title: "Uniswap", url: "https://app.uniswap.org")
-                quickDappButton(title: "1inch", url: "https://app.1inch.io")
-            }
-            HStack(spacing: 8) {
-                quickDappButton(title: "thirdweb", url: "https://thirdweb.com/dashboard")
-                quickDappButton(title: "Etherscan", url: "https://sepolia.etherscan.io")
-            }
-            HStack(spacing: 8) {
-                quickDappButton(title: "領水", url: ChainConfig.testnetFaucetURL.absoluteString)
-                quickDappButton(title: "Chainlink", url: "https://faucets.chain.link/sepolia")
-            }
-        }
-        .padding(16)
-        .glassCard(cornerRadius: 16, variant: .mint)
-    }
-
-    private func quickDappButton(title: String, url: String) -> some View {
-        Button {
-            openDapp(url)
+    private var integrationCheckCard: some View {
+        NavigationLink {
+            IntegrationCheckView()
         } label: {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .foregroundStyle(AppTheme.primary)
-                .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(AppTheme.primary, lineWidth: 1)
-                )
+            HStack(alignment: .top, spacing: 12) {
+                SketchIcon(kind: .gear, size: 22, color: AppTheme.primary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("一鍵檢測 GitHub 整合")
+                        .notebookHeadline(16)
+                        .foregroundStyle(AppTheme.ink)
+                    Text("展開每項可見逐步檢測：Token Core、惡意連結、Face ID…")
+                        .notebookCaption(12)
+                        .foregroundStyle(AppTheme.ink.opacity(0.55))
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.ink.opacity(0.35))
+            }
+            .padding(16)
+            .glassCard(cornerRadius: 16, variant: .pink)
         }
+        .buttonStyle(.plain)
     }
 
     private var walletConnectCard: some View {
@@ -149,8 +164,12 @@ struct ExploreView: View {
             ) {
                 ForEach(category.items) { dapp in
                     Button {
-                        urlText = dapp.url
-                        openDapp(dapp.url)
+                        if SepoliaFaucetOpener.isGoogleSepoliaFaucetURLString(dapp.url) {
+                            openGoogleSepoliaFaucet()
+                        } else {
+                            urlText = dapp.url
+                            openDapp(dapp.url)
+                        }
                     } label: {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(dapp.name)
@@ -171,6 +190,14 @@ struct ExploreView: View {
         }
     }
 
+    private func openGoogleSepoliaFaucet() {
+        guard walletSession.hasWallet, walletSession.account != nil else {
+            showNeedWallet = true
+            return
+        }
+        SepoliaFaucetOpener.openGoogleFaucet(copyingAddress: walletSession.account?.address)
+    }
+
     private func openDapp(_ raw: String) {
         guard walletSession.hasWallet, walletSession.account != nil else {
             showNeedWallet = true
@@ -182,6 +209,15 @@ struct ExploreView: View {
             next = "https://\(next)"
         }
         guard let url = URL(string: next) else { return }
+        let verdict = WalletURLSafety.evaluate(url)
+        guard verdict.allowed else {
+            blockedURLMessage = "檢測到可疑網址，已阻擋開啟。\n原因：\(verdict.reason)"
+            return
+        }
+        if SepoliaFaucetOpener.isGoogleSepoliaFaucetURL(url) {
+            openGoogleSepoliaFaucet()
+            return
+        }
         urlText = next
         browserDestination = BrowserDestination(url: url)
     }

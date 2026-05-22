@@ -84,12 +84,12 @@ enum TransactionAuthService {
     @MainActor
     static func authenticateForTransaction(reason: String) async throws {
         if DuressModeController.shared.isDecoyActive {
-            await DuressModeController.shared.recordHostileAction()
+            DuressModeController.shared.recordHostileAction()
         }
 
         let settings = SecuritySettingsStore.shared
 
-        if settings.useFaceIDForTransactions && canUseBiometry {
+        if settings.allowsBiometricTransactionConfirmation {
             try await evaluateBiometry(reason: reason)
             return
         }

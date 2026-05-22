@@ -68,6 +68,25 @@ struct TransactionPINEntrySheet: View {
             }
         }
         .presentationDetents([.medium])
+        .vibePresentedScreen()
+        .task {
+            guard mode == .verify else { return }
+            await tryBiometricVerify()
+        }
+    }
+
+    @MainActor
+    private func tryBiometricVerify() async {
+        guard SecuritySettingsStore.shared.allowsBiometricTransactionConfirmation else { return }
+        do {
+            try await TransactionAuthService.evaluateBiometry(
+                reason: "確認交易"
+            )
+            onComplete(true)
+            dismiss()
+        } catch {
+            // 改用手動輸入 PIN
+        }
     }
 
     private var titleText: String {

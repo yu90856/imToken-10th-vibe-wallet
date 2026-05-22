@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 常駐底部導覽：首頁 · 行情 · 交換 · 探索 · 錢包（底圖為整條直尺橫幅）
+/// 常駐底部導覽：首頁 · 行情 · 交換 · 探索 · 錢包（底圖為手繪直尺橫幅）
 struct WalletDeckBar: View {
     @Binding var selection: AppTab
     var onSelect: ((AppTab) -> Void)?
@@ -32,6 +32,7 @@ struct WalletDeckBar: View {
     }
 
     private func select(_ tab: AppTab) {
+        VibeHaptics.selection()
         onSelect?(tab)
         if tab != .home {
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -56,18 +57,19 @@ struct WalletDeckBar: View {
                         .frame(width: swapCircleSize, height: swapCircleSize)
                         .overlay(
                             Circle()
-                                .strokeBorder(AppTheme.ink.opacity(0.22), lineWidth: 1)
+                                .strokeBorder(AppTheme.ink(for: colorScheme).opacity(0.22), lineWidth: 1)
                         )
                     SketchIcon(kind: .swap, size: 22, color: .white)
                 }
                 Text("交換")
                     .font(NotebookFont.label(11))
             }
-            .frame(maxWidth: .infinity)
-            .foregroundStyle(isSelected ? AppTheme.primary : AppTheme.ink.opacity(0.6))
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .foregroundStyle(isSelected ? AppTheme.primary : AppTheme.ink(for: colorScheme).opacity(0.6))
         }
         .buttonStyle(.plain)
         .accessibilityLabel("交換")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private func deckItem(tab: AppTab, kind: SketchIcon.Kind, label: String) -> some View {
@@ -79,21 +81,23 @@ struct WalletDeckBar: View {
                 SketchIcon(
                     kind: kind,
                     size: iconSize,
-                    color: isSelected ? AppTheme.primary : AppTheme.ink.opacity(0.5)
+                    color: isSelected ? AppTheme.primary : AppTheme.ink(for: colorScheme).opacity(0.5)
                 )
                 Text(label)
                     .font(NotebookFont.label(11))
             }
-            .frame(maxWidth: .infinity)
-            .foregroundStyle(isSelected ? AppTheme.primary : AppTheme.ink.opacity(0.6))
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .foregroundStyle(isSelected ? AppTheme.primary : AppTheme.ink(for: colorScheme).opacity(0.6))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
 enum WalletDeckMetrics {
     /// 底部 Deck 佔用高度（含安全區），避免 ScrollView 最後一項被遮住
-    static let bottomInset: CGFloat = 88
+    static let bottomInset: CGFloat = 96
 }
 
 extension View {

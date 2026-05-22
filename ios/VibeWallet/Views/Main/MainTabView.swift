@@ -14,6 +14,7 @@ struct MainTabView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.scenePhase) private var scenePhase
     @Environment(WalletSession.self) private var walletSession
+    @State private var previousTab: AppTab = .home
 
     var body: some View {
         @Bindable var navigation = navigation
@@ -22,7 +23,12 @@ struct MainTabView: View {
                 .ignoresSafeArea()
 
             tabContent(navigation: navigation)
+                .vibeTabAnimatedContent(
+                    selectedTab: navigation.selectedTab,
+                    previousTab: previousTab
+                )
         }
+        .animation(VibeMotion.tabSpring, value: navigation.selectedTab)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             WalletDeckBar(selection: $navigation.selectedTab, onSelect: handleDeckTap)
                 .padding(.horizontal, 12)
@@ -31,14 +37,14 @@ struct MainTabView: View {
         .overlay {
             if duress.isAppLocked {
                 AppLockOverlay()
-                    .transition(.opacity)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
             } else if duress.fakeErrorPresented {
                 DuressFakeErrorOverlay()
-                    .transition(.opacity)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: duress.isAppLocked)
-        .animation(.easeInOut(duration: 0.2), value: duress.fakeErrorPresented)
+        .animation(VibeMotion.modalSpring, value: duress.isAppLocked)
+        .animation(VibeMotion.quickEase, value: duress.fakeErrorPresented)
         .onAppear {
             if !duress.isDecoyActive {
                 navigation.selectedTab = .home
@@ -61,6 +67,10 @@ struct MainTabView: View {
                 navigation.selectedTab = .wallet
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .vibeOpenDeepLink)) { note in
+            guard let link = note.object as? VibeDeepLink else { return }
+            navigation.apply(deepLink: link)
+        }
     }
 
     private func lockIfNeeded() {
@@ -70,13 +80,17 @@ struct MainTabView: View {
 
     private func handleDeckTap(_ tab: AppTab) {
         duress.registerDeckTap(tab)
+        let outgoing = navigation.selectedTab
 
-        if tab == .home {
-            navigation.goHome()
-        } else {
-            navigation.selectedTab = tab
-            if tab != .swap {
-                navigation.swapPreselectedToken = nil
+        withAnimation(VibeMotion.tabSpring) {
+            previousTab = outgoing
+            if tab == .home {
+                navigation.goHome()
+            } else {
+                navigation.selectedTab = tab
+                if tab != .swap {
+                    navigation.swapPreselectedToken = nil
+                }
             }
         }
     }
@@ -103,8 +117,10 @@ struct MainTabView: View {
                     preselectedTo: navigation.swapPreselectedToken,
                     showsSubpageNavigation: false
                 )
+                .vibeNavigationPushStyle()
             }
             .id(navigation.swapPreselectedToken?.id ?? "swap-default")
+            .animation(VibeMotion.navigationSpring, value: navigation.swapPreselectedToken?.id)
         case .explore:
             ExploreView()
         case .wallet:

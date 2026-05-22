@@ -2,6 +2,7 @@ import Foundation
 import OSLog
 
 /// CoinGecko 公開行情（主流市值前 50 + meme + trending）
+@MainActor
 enum CoinGeckoMarketService {
     private static let log = Logger(subsystem: "com.vibe.wallet", category: "Market")
 
@@ -207,10 +208,6 @@ enum CoinGeckoMarketService {
         let volume = (row["total_volume"] as? Double) ?? 0
         let image = row["image"] as? String
 
-        var balance: Decimal?
-        if cgId == "ethereum" { balance = 0.42 }
-        if cgId == "usd-coin" { balance = 120 }
-
         return MarketToken(
             id: cgId,
             symbol: symbol.uppercased(),
@@ -220,9 +217,38 @@ enum CoinGeckoMarketService {
             change24hPercent: change,
             volume24hUSD: Decimal(volume),
             category: category,
-            walletBalance: balance,
+            walletBalance: nil,
             imageURL: image
         )
+    }
+
+    /// 將鏈上持倉餘額寫入行情列表（Sepolia 錢包）
+    @MainActor
+    static func mergeWalletBalances(into tokens: [MarketToken]) async -> [MarketToken] {
+        guard ChainConfig.usesTestnet,
+              let address = WalletSession.shared.account?.address,
+              let snapshot = try? await WalletOnChainHoldingsService.load(address: address) else {
+            return tokens
+        }
+
+        var balancesByMarketId: [String: Decimal] = [:]
+        for holding in snapshot.holdings {
+            guard let marketId = SepoliaSwapTokenCatalog.marketTokenId(forHoldingId: holding.id),
+                  let dec = Decimal(string: holding.balance.replacingOccurrences(of: ",", with: "")) else {
+                continue
+            }
+            balancesByMarketId[marketId] = dec
+        }
+
+        return tokens.map { token in
+            if let balance = balancesByMarketId[token.id] {
+                return token.with(walletBalance: balance)
+            }
+            if token.id == "usd-coin", let vusdc = balancesByMarketId[SepoliaSwapDemoConfig.vUSDCMarketId] {
+                return token.with(walletBalance: vusdc)
+            }
+            return token
+        }
     }
 
     private static func dedupe(_ tokens: [MarketToken]) -> [MarketToken] {
@@ -273,7 +299,7 @@ enum ExpandedMarketCatalog {
                 change24hPercent: s.chg,
                 volume24hUSD: Decimal(s.vol),
                 category: s.cat,
-                walletBalance: s.id == "ethereum" ? 0.42 : (s.id == "usd-coin" ? 120 : nil),
+                walletBalance: nil,
                 imageURL: TokenLogoCatalog.url(for: TokenLogoCatalog.tokenId(fromCoingeckoId: s.id))?.absoluteString
             )
         }

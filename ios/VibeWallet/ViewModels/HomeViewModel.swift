@@ -1,101 +1,217 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class HomeViewModel {
     private(set) var portfolio: PortfolioSummary
     private(set) var sovereignty: SovereigntyStatus
     private(set) var holdings: [HoldingAsset]
-    private(set) var userDisplayName: String
     var toastMessage: String?
 
+    private(set) var shoppingWishlist: [HomeShoppingWishlistRow] = []
+    private(set) var shoppingStickyBanner: String?
+    private(set) var shoppingWishlistLoading = false
+
+    private var weatherService: HomeWeatherService?
     private(set) var refreshSpinDegrees: Double = 0
-    private(set) var isLoadingChainBalance = false
 
     private let mockData: HomeDataProviding
-    private var refreshCount = 0
+    private var balanceStore: WalletBalanceStore?
 
     init(dataService: HomeDataProviding = MockHomeDataService()) {
         self.mockData = dataService
-        self.portfolio = dataService.loadPortfolio(refreshOffset: 0)
-        self.sovereignty = dataService.loadSovereigntyStatus()
-        self.holdings = dataService.loadHoldings()
-        if let short = WalletSession.shared.account?.shortAddress {
-            self.userDisplayName = short
-        } else {
-            self.userDisplayName = "Viola"
-        }
+        sovereignty = dataService.loadSovereigntyStatus()
+        portfolio = dataService.loadPortfolio(refreshOffset: 0)
+        holdings = dataService.loadHoldings()
     }
 
-    func updateWalletDisplayName() {
-        userDisplayName = WalletSession.shared.account?.shortAddress ?? "Viola"
+    func attachSharedServices() {
+        if weatherService == nil {
+            weatherService = HomeWeatherService.shared
+        }
+        guard balanceStore == nil else { return }
+        let store = WalletBalanceStore.shared
+        balanceStore = store
+        applyCachedBalances()
+    }
+
+    private var resolvedBalanceStore: WalletBalanceStore {
+        if let balanceStore { return balanceStore }
+        let store = WalletBalanceStore.shared
+        balanceStore = store
+        return store
+    }
+
+    private var resolvedWeatherService: HomeWeatherService {
+        if let weatherService { return weatherService }
+        let service = HomeWeatherService.shared
+        weatherService = service
+        return service
+    }
+
+    private var shouldUseChainBalances: Bool {
+        ChainConfig.usesTestnet && WalletSession.shared.hasWallet
+    }
+
+    func applyCachedBalances() {
+        guard let snap = resolvedBalanceStore.snapshot else { return }
+        portfolio = snap.portfolio
+        holdings = snap.holdings
+    }
+
+    var formattedDateLine: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_TW")
+        formatter.dateFormat = "yyyy年MM月dd日，天氣："
+        return formatter.string(from: Date())
+    }
+
+    var headerDateWeatherLine: String {
+        formattedDateLine + resolvedWeatherService.weatherLine
+    }
+
+    var topHoldingsByValue: [HoldingAsset] {
+        holdings
+            .sorted { $0.valueUSD > $1.valueUSD }
+            .prefix(2)
+            .map { $0 }
+    }
+
+    func refreshWeatherLine() {
+        resolvedWeatherService.refreshIfNeeded()
     }
 
     func refresh() {
-        refreshCount += 1
         refreshSpinDegrees += 360
         sovereignty = mockData.loadSovereigntyStatus()
-        Task { await loadChainBalances() }
+        Task {
+            await loadChainBalances(force: true)
+            await refreshShoppingWishlist()
+        }
+    }
+
+    func refreshShoppingWishlist() async {
+        shoppingWishlistLoading = true
+        defer { shoppingWishlistLoading = false }
+
+        let granted = await ShoppingRemindersService.requestAccessIfNeeded()
+        guard granted else {
+            shoppingStickyBanner = ShoppingRemindersError.accessDenied.errorDescription
+            shoppingWishlist = []
+            return
+        }
+
+        let reminders: [ShoppingReminderItem]
+        do {
+            reminders = try await ShoppingRemindersService.fetchIncompleteItems()
+        } catch let error as ShoppingRemindersError {
+            shoppingStickyBanner = error.errorDescription
+            shoppingWishlist = []
+            return
+        } catch {
+            shoppingStickyBanner = "無法讀取提醒事項：\(error.localizedDescription)"
+            shoppingWishlist = []
+            return
+        }
+
+        if reminders.isEmpty {
+            shoppingStickyBanner = nil
+            shoppingWishlist = []
+            return
+        }
+
+        var rows: [HomeShoppingWishlistRow] = []
+        var apiHint: String?
+
+        for reminder in reminders.prefix(3) {
+            let query = reminder.searchQuery
+            switch await BitrefillCatalogService.search(query: query, limit: 5) {
+            case .success(let products):
+                let status: String
+                if products.first != nil {
+                    status = products.count > 1
+                        ? "Bitrefill 找到 \(products.count) 項商品"
+                        : "Bitrefill 可購買"
+                } else {
+                    status = "Bitrefill 暫無相符商品"
+                }
+                rows.append(
+                    HomeShoppingWishlistRow(
+                        id: reminder.id,
+                        reminderTitle: reminder.title,
+                        statusLine: status,
+                        topProductName: products.first.map { "\($0.name) · \($0.countryName)" },
+                        searchQuery: query,
+                        previewProducts: products
+                    )
+                )
+            case .failure(let error):
+                if case .missingAPIKey = error {
+                    if apiHint == nil {
+                        apiHint = bitrefillSecretsHint
+                    }
+                    rows.append(
+                        HomeShoppingWishlistRow(
+                            id: reminder.id,
+                            reminderTitle: reminder.title,
+                            statusLine: "待辦已同步 · Bitrefill API 未就緒",
+                            topProductName: nil,
+                            searchQuery: query,
+                            previewProducts: []
+                        )
+                    )
+                } else {
+                    rows.append(
+                        HomeShoppingWishlistRow(
+                            id: reminder.id,
+                            reminderTitle: reminder.title,
+                            statusLine: error.localizedDescription,
+                            topProductName: nil,
+                            searchQuery: query,
+                            previewProducts: []
+                        )
+                    )
+                }
+            }
+        }
+
+        shoppingWishlist = rows
+        shoppingStickyBanner = apiHint
+        await WidgetSyncService.refreshFromApp()
     }
 
     func loadChainBalancesIfNeeded() {
-        Task { await loadChainBalances() }
+        Task { await loadChainBalances(force: false) }
+    }
+
+    func reloadAfterWalletActivity() {
+        applyCachedBalances()
+        Task { await loadChainBalances(force: true) }
     }
 
     @MainActor
-    private func loadChainBalances() async {
-        guard ChainConfig.usesTestnet, let address = WalletSession.shared.account?.address else {
-            portfolio = mockData.loadPortfolio(refreshOffset: refreshCount)
+    private func loadChainBalances(force: Bool) async {
+        guard shouldUseChainBalances else {
+            portfolio = mockData.loadPortfolio(refreshOffset: 0)
             holdings = mockData.loadHoldings()
             return
         }
 
-        isLoadingChainBalance = true
-        defer { isLoadingChainBalance = false }
-
-        do {
-            let eth = try await ChainRPCClient.fetchNativeBalance(address: address)
-            let usdRate = (try? await ChainRPCClient.fetchNativeUsdPrice()) ?? 3_000
-            let totalUSD = eth * usdRate
-
-            portfolio = PortfolioSummary(
-                totalBalanceUSD: totalUSD,
-                change24hPercent: 0,
-                change24hUSD: 0,
-                lastUpdated: Date(),
-                currencyCode: "USD"
-            )
-            holdings = [
-                HoldingAsset(
-                    id: "eth-native",
-                    symbol: ChainConfig.active.symbol,
-                    name: "\(ChainConfig.active.name) 原生幣",
-                    balance: formatEther(eth),
-                    valueUSD: totalUSD,
-                    change24hPercent: CoinGeckoMarketService.token(id: "ethereum")?.change24hPercent ?? 0,
-                    imageURL: CoinGeckoMarketService.token(id: "ethereum")?.imageURL
-                        ?? TokenLogoCatalog.url(for: "eth")?.absoluteString
-                ),
-            ]
-            toastMessage = "測試網餘額已更新 · \(formattedTime())"
-        } catch {
-            portfolio = mockData.loadPortfolio(refreshOffset: refreshCount)
-            holdings = mockData.loadHoldings()
-            toastMessage = "讀取測試網失敗：\(error.localizedDescription)"
+        await resolvedBalanceStore.refresh(force: force)
+        if let snap = resolvedBalanceStore.snapshot {
+            portfolio = snap.portfolio
+            holdings = snap.holdings
+            if force {
+                toastMessage = "測試網餘額已更新 · \(formattedTime())"
+            }
+        } else if resolvedBalanceStore.lastError != nil, !resolvedBalanceStore.hasDisplayableSnapshot {
+            toastMessage = "讀取測試網失敗：\(resolvedBalanceStore.lastError ?? "")"
         }
     }
 
     func dismissToast() {
         toastMessage = nil
-    }
-
-    private func formatEther(_ amount: Decimal) -> String {
-        let n = NSDecimalNumber(decimal: amount)
-        let f = NumberFormatter()
-        f.minimumFractionDigits = 0
-        f.maximumFractionDigits = 6
-        f.numberStyle = .decimal
-        return f.string(from: n) ?? "\(amount)"
     }
 
     private func formattedTime() -> String {
@@ -104,12 +220,11 @@ final class HomeViewModel {
         return f.string(from: Date())
     }
 
-    var greeting: String {
-        let hour = Calendar.current.component(.hour, from: Date())
-        switch hour {
-        case 5..<12: return "早安"
-        case 12..<18: return "午安"
-        default: return "晚安"
+    private var bitrefillSecretsHint: String {
+        if SecretsReader.hasBitrefillAPIKey {
+            return "Bitrefill API 金鑰已載入；若仍失敗請點重新整理。"
         }
+        return "請確認 ios/VibeWallet/Config/Secrets.plist 含 BITREFILL_API_KEY，並在 Xcode 重新 Run（Build Phase 會複製 Secrets）。"
     }
+
 }

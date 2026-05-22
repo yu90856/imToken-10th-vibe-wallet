@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class MarketViewModel {
     var searchText = ""
@@ -22,10 +23,12 @@ final class MarketViewModel {
     @MainActor
     func refreshMarket(force: Bool = false) async {
         isLoadingMarket = true
-        allTokens = await CoinGeckoMarketService.refreshIfNeeded(force: force)
+        let fetched = await CoinGeckoMarketService.refreshIfNeeded(force: force)
+        allTokens = await CoinGeckoMarketService.mergeWalletBalances(into: fetched)
         marketDataSource = CoinGeckoMarketService.dataSourceLabel
         marketLoadHint = CoinGeckoMarketService.lastLoadError
         isLoadingMarket = false
+        await WidgetSyncService.refreshFromApp()
     }
 
     var marketStatusText: String {

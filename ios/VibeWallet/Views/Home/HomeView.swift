@@ -2,23 +2,37 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
+    @Bindable private var weatherService = HomeWeatherService.shared
     @Environment(WalletSession.self) private var walletSession
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.appNavigation) private var appNavigation
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         @Bindable var appNavigation = appNavigation
         NavigationStack(path: $appNavigation.homePath) {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: VibeSpacing.large) {
                     headerSection
 
-                    tappableCard(
-                        route: .portfolio,
-                        hint: "查看持倉明細"
-                    ) {
-                        AssetBalanceCard(portfolio: viewModel.portfolio)
-                    }
+                    assetCardSection
+
+                    HomeShoppingStickyCard(
+                        rows: viewModel.shoppingWishlist,
+                        bannerMessage: viewModel.shoppingStickyBanner,
+                        isLoading: viewModel.shoppingWishlistLoading,
+                        onRefresh: {
+                            Task { await viewModel.refreshShoppingWishlist() }
+                        },
+                        onOpenShop: { row in
+                            appNavigation.homePath.append(
+                                HomeRoute.bitrefillShop(
+                                    initialQuery: row.searchQuery,
+                                    previewProducts: row.previewProducts
+                                )
+                            )
+                        }
+                    )
 
                     HotNewsStickyCard()
 
@@ -26,21 +40,17 @@ struct HomeView: View {
 
                     sovereigntyFootnote
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 8)
-                .padding(.bottom, 24)
+                .padding(.horizontal, VibeSpacing.mediumLarge)
+                .padding(.top, VibeSpacing.xSmall)
+                .padding(.bottom, VibeSpacing.large)
             }
-            .walletDeckScrollInset()
-            .background {
-                AppTheme.pageBackground(for: colorScheme)
-                    .ignoresSafeArea()
-            }
+            .vibeNotebookPage(colorScheme: colorScheme)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Vibe 筆記")
+                    Text("vibe note")
                         .notebookHeadline(22)
-                        .foregroundStyle(AppTheme.ink)
+                        .foregroundStyle(AppTheme.ink(for: colorScheme))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -59,6 +69,22 @@ struct HomeView: View {
                         holdings: viewModel.holdings
                     )
                     .subpageNavigation(backTitle: "首頁")
+                case .pufferStaking:
+                    PufferStakingView()
+                        .subpageNavigation(backTitle: "首頁")
+                case .bitrefillShop(let query, let previewProducts):
+                    BitrefillShopView(initialQuery: query, previewProducts: previewProducts) { productId in
+                        appNavigation.homePath.append(HomeRoute.bitrefillProduct(productId: productId))
+                    }
+                    .subpageNavigation(backTitle: "首頁")
+                case .bitrefillProduct(let productId):
+                    BitrefillProductDetailView(productId: productId) { invoice in
+                        appNavigation.homePath.append(HomeRoute.bitrefillCheckout(invoice: invoice))
+                    }
+                    .subpageNavigation(backTitle: "商店")
+                case .bitrefillCheckout(let invoice):
+                    BitrefillCheckoutView(invoice: invoice)
+                        .subpageNavigation(backTitle: "確認")
                 case .sovereignty:
                     SovereigntyDetailView(status: viewModel.sovereignty)
                         .subpageNavigation(backTitle: "首頁")
@@ -86,10 +112,59 @@ struct HomeView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: viewModel.toastMessage)
+            .vibeNavigationPathAnimation(appNavigation.homePath)
             .onAppear {
-                viewModel.updateWalletDisplayName()
+                viewModel.attachSharedServices()
+                viewModel.applyCachedBalances()
+                viewModel.refreshWeatherLine()
+                viewModel.loadChainBalancesIfNeeded()
+                Task { await viewModel.refreshShoppingWishlist() }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .walletBalancesDidChange)) { _ in
+                viewModel.reloadAfterWalletActivity()
+            }
+            .task(id: walletSession.account?.address) {
+                viewModel.attachSharedServices()
+                viewModel.applyCachedBalances()
                 viewModel.loadChainBalancesIfNeeded()
             }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    weatherService.refreshIfNeeded()
+                    Task { await viewModel.refreshShoppingWishlist() }
+                }
+            }
+        }
+    }
+
+    private var assetCardSection: some View {
+        VStack(alignment: .trailing, spacing: 6) {
+            ZStack {
+                Button {
+                    appNavigation.homePath.append(HomeRoute.portfolio)
+                } label: {
+                    AssetBalanceCard(
+                        portfolio: viewModel.portfolio,
+                        topHoldings: viewModel.topHoldingsByValue
+                    )
+                }
+                .buttonStyle(VibeCardPressStyle())
+
+                PufferNotebookStickerButton {
+                    appNavigation.homePath.append(HomeRoute.pufferStaking)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                .padding(.trailing, 8)
+                .zIndex(2)
+            }
+
+            HStack(spacing: 4) {
+                Text("查看持倉明細")
+                    .notebookCaption(12)
+                Text("→")
+                    .notebookCaption(14)
+            }
+            .foregroundStyle(AppTheme.primary)
         }
     }
 
@@ -112,15 +187,17 @@ struct HomeView: View {
                 .foregroundStyle(AppTheme.primary)
             }
         }
-        .buttonStyle(CardPressStyle())
+        .buttonStyle(VibeCardPressStyle())
         .accessibilityHint(hint)
     }
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("\(viewModel.greeting)，\(viewModel.userDisplayName)")
-                .notebookTitle(26)
-                .foregroundStyle(AppTheme.ink)
+            Text(viewModel.formattedDateLine + weatherService.weatherLine)
+                .font(NotebookFont.body(15))
+                .foregroundStyle(AppTheme.ink(for: colorScheme))
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
 
             HStack(spacing: 8) {
                 BNBChainBadge(compact: true)
@@ -128,11 +205,11 @@ struct HomeView: View {
                     Text(account.shortAddress)
                         .font(NotebookFont.caption(12))
                         .monospaced()
-                        .foregroundStyle(AppTheme.ink.opacity(0.55))
+                        .foregroundStyle(AppTheme.secondaryInk(for: colorScheme))
                 } else {
                     Text("尚未建立錢包")
                         .notebookCaption()
-                        .foregroundStyle(AppTheme.ink.opacity(0.55))
+                        .foregroundStyle(AppTheme.secondaryInk(for: colorScheme))
                 }
             }
         }
@@ -147,19 +224,11 @@ struct HomeView: View {
                 ? "已連線 Sepolia；首頁餘額為鏈上 ETH。下拉可重新整理。"
                 : "資產與行情為示範資料。keystore 由 Token Core 在本機處理。")
                 .notebookCaption(11)
-                .foregroundStyle(AppTheme.ink.opacity(0.5))
+                .foregroundStyle(AppTheme.secondaryInk(for: colorScheme))
         }
-        .padding(.horizontal, 4)
+        .padding(.horizontal, VibeSpacing.xxSmall)
     }
-}
 
-private struct CardPressStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .opacity(configuration.isPressed ? 0.92 : 1)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
-    }
 }
 
 private struct ToastBanner: View {

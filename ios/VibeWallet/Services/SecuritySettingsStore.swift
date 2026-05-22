@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class SecuritySettingsStore {
     static let shared = SecuritySettingsStore()
@@ -15,8 +16,9 @@ final class SecuritySettingsStore {
     var faceIDEnabled: Bool {
         didSet {
             UserDefaults.standard.set(faceIDEnabled, forKey: Key.faceID)
-            if faceIDEnabled, UserDefaults.standard.object(forKey: Key.duress) == nil {
-                duressProtectionEnabled = true
+            if !faceIDEnabled {
+                useFaceIDForTransactions = false
+                WalletBiometricUnlock.deleteStoredSigningPassword()
             }
         }
     }
@@ -33,14 +35,39 @@ final class SecuritySettingsStore {
         WalletKeychainStore.loadSecurityItem(account: Key.pinAccount) != nil
     }
 
+    /// 可用 Face ID / Touch ID 解鎖錢包密碼與 App 鎖定
+    var allowsBiometricUnlock: Bool {
+        faceIDEnabled && TransactionAuthService.canUseBiometry
+    }
+
+    /// 交換／簽名確認可改用生物辨識（免輸入 4 碼 PIN）
+    var allowsBiometricTransactionConfirmation: Bool {
+        allowsBiometricUnlock && useFaceIDForTransactions
+    }
+
     private init() {
-        faceIDEnabled = UserDefaults.standard.bool(forKey: Key.faceID)
-        useFaceIDForTransactions = UserDefaults.standard.bool(forKey: Key.faceIDForTx)
-        if UserDefaults.standard.object(forKey: Key.duress) != nil {
-            duressProtectionEnabled = UserDefaults.standard.bool(forKey: Key.duress)
+        let defaults = UserDefaults.standard
+        let resolvedFaceID: Bool
+        if defaults.object(forKey: Key.faceID) == nil {
+            resolvedFaceID = TransactionAuthService.canUseBiometry
         } else {
-            duressProtectionEnabled = true
+            resolvedFaceID = defaults.bool(forKey: Key.faceID)
         }
+        let resolvedTxFaceID: Bool
+        if defaults.object(forKey: Key.faceIDForTx) == nil {
+            resolvedTxFaceID = resolvedFaceID
+        } else {
+            resolvedTxFaceID = defaults.bool(forKey: Key.faceIDForTx)
+        }
+        let resolvedDuress: Bool
+        if defaults.object(forKey: Key.duress) != nil {
+            resolvedDuress = defaults.bool(forKey: Key.duress)
+        } else {
+            resolvedDuress = false
+        }
+        faceIDEnabled = resolvedFaceID
+        useFaceIDForTransactions = resolvedTxFaceID
+        duressProtectionEnabled = resolvedDuress
     }
 
     func saveTransactionPIN(_ pin: String) throws {

@@ -15,6 +15,8 @@ enum AppTheme {
         ink(for: scheme).opacity(0.65)
     }
     static let primary = pencil
+    /// 與 Web token-ui `--primary` 對齊的互動藍（CTA 漸層點綴）
+    static let brandBlue = Color(red: 0 / 255, green: 127 / 255, blue: 255 / 255)
     static let secondary = Color(red: 95 / 255, green: 130 / 255, blue: 160 / 255)
     static let deepNavy = ink
 
@@ -78,6 +80,20 @@ enum AppTheme {
         endPoint: .bottomTrailing
     )
 
+    static let ctaGradient = LinearGradient(
+        colors: [brandBlue.opacity(0.92), pencil],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static func fieldFill(for scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.72)
+    }
+
+    static func fieldStroke(for scheme: ColorScheme) -> Color {
+        scheme == .dark ? pencil.opacity(0.35) : ink.opacity(0.12)
+    }
+
     static let meshAccent = LinearGradient(
         colors: [pencil.opacity(0.85), secondary.opacity(0.65)],
         startPoint: .leading,
@@ -96,7 +112,7 @@ struct StickyNoteCardModifier: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
     var cornerRadius: CGFloat = 10
     var variant: StickyNoteVariant = .yellow
-    var tiltDegrees: Double = -0.6
+    var tiltDegrees: Double = 0
 
     func body(content: Content) -> some View {
         content
@@ -131,7 +147,7 @@ struct StickyNoteCardModifier: ViewModifier {
 typealias GlassCardModifier = StickyNoteCardModifier
 
 extension View {
-    func glassCard(cornerRadius: CGFloat = 10, variant: StickyNoteVariant = .yellow, tilt: Double = -0.6) -> some View {
+    func glassCard(cornerRadius: CGFloat = 10, variant: StickyNoteVariant = .yellow, tilt: Double = 0) -> some View {
         modifier(GlassCardModifier(cornerRadius: cornerRadius, variant: variant, tiltDegrees: tilt))
     }
 }

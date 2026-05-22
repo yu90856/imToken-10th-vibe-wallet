@@ -6,6 +6,7 @@ enum SwapAmountField {
     case to
 }
 
+@MainActor
 @Observable
 final class SwapViewModel {
     private(set) var walletTokens: [MarketToken] = []
@@ -16,51 +17,108 @@ final class SwapViewModel {
     var slippagePercent: Double = 0.5
     var mevProtectionEnabled = true
 
+    private(set) var isRefreshing = false
+    private(set) var isSwapping = false
+    private(set) var lastSwapMessage: String?
+    private(set) var lastTxHash: String?
+
     private var lastEdited: SwapAmountField = .from
     private var suppressRecalculation = false
 
-    private let marketService = MockMarketDataService()
     private let feeMultiplier = Decimal(string: "0.997")!
+    /// 從行情帶入的接收代幣（refresh 時保留，避免被重設成 ETH）
+    private let marketPreselectedTo: MarketToken?
 
     init(preselectedTo: MarketToken?) {
-        applyTokenSelection(preselectedTo: preselectedTo)
+        marketPreselectedTo = preselectedTo
+        applyTokenSelection(
+            preselectedTo: SepoliaSwapTokenCatalog.resolvePreselectedToken(preselectedTo)
+        )
     }
 
     @MainActor
-    func refreshTokens(preselectedTo: MarketToken? = nil) async {
-        _ = await CoinGeckoMarketService.refreshIfNeeded()
-        applyTokenSelection(preselectedTo: preselectedTo)
+    func refreshTokens(preselectedTo override: MarketToken? = nil) async {
+        isRefreshing = true
+        defer { isRefreshing = false }
+
+        let resolvedTarget = SepoliaSwapTokenCatalog.resolvePreselectedToken(
+            override ?? marketPreselectedTo
+        )
+
+        await WalletBalanceStore.shared.refresh()
+
+        if ChainConfig.usesTestnet {
+            _ = await CoinGeckoMarketService.refreshIfNeeded()
+            let catalog = CoinGeckoMarketService.cachedTokens()
+            let onChain = await SepoliaSwapTokenCatalog.loadSwappableTokens()
+            walletTokens = SepoliaSwapTokenCatalog.mergeCatalogWithOnChain(
+                catalog: catalog,
+                onChain: onChain
+            )
+        } else {
+            _ = await CoinGeckoMarketService.refreshIfNeeded()
+            var all = await CoinGeckoMarketService.mergeWalletBalances(
+                into: CoinGeckoMarketService.cachedTokens()
+            )
+            _ = SepoliaSwapTokenCatalog.ensureUSDT(in: &all)
+            walletTokens = all.filter { ($0.walletBalance ?? 0) > 0 }
+            if walletTokens.isEmpty {
+                walletTokens = all
+            }
+            if !walletTokens.contains(where: { SepoliaSwapTokenCatalog.isUSDTAnchor($0.id) }) {
+                _ = SepoliaSwapTokenCatalog.ensureUSDT(in: &walletTokens)
+            }
+            walletTokens = SepoliaSwapTokenCatalog.sortForTokenPicker(walletTokens)
+        }
+        applyTokenSelection(preselectedTo: resolvedTarget)
     }
 
     private func applyTokenSelection(preselectedTo: MarketToken?) {
-        let all = CoinGeckoMarketService.cachedTokens()
-        walletTokens = all.filter { ($0.walletBalance ?? 0) > 0 }
-        if walletTokens.isEmpty {
-            walletTokens = all.filter { ["ethereum", "usd-coin"].contains($0.id) }
+        var all = walletTokens
+        let usdt = SepoliaSwapTokenCatalog.ensureUSDT(in: &all)
+        walletTokens = SepoliaSwapTokenCatalog.sortForTokenPicker(all)
+        fromToken = usdt
+
+        guard let preselectedTo, preselectedTo.id != usdt.id else {
+            toToken = all.first { $0.id == "ethereum" }
+                ?? all.first { !SepoliaSwapTokenCatalog.isUSDTAnchor($0.id) && $0.id != usdt.id }
+            return
         }
-        fromToken = walletTokens.first { $0.id == "usd-coin" || $0.symbol == "USDC" } ?? walletTokens.first
-        toToken = preselectedTo
-            ?? all.first { $0.id == "ethereum" || $0.symbol == "ETH" }
-            ?? walletTokens.first { $0.id == "ethereum" }
-            ?? all.first
+
+        let merged = SepoliaSwapTokenCatalog.mergeMarketToken(preselectedTo, into: all)
+        walletTokens = SepoliaSwapTokenCatalog.sortForTokenPicker(merged)
+        toToken = walletTokens.first { $0.id == preselectedTo.id } ?? preselectedTo
+    }
+
+    /// 行情進入時為參考報價（USDT → 代幣），非 Sepolia 鏈上結算
+    var isReferenceQuoteOnly: Bool {
+        guard let from = fromToken, toToken != nil else { return false }
+        return SepoliaSwapTokenCatalog.isUSDTAnchor(from.id) && !canExecuteOnChain
     }
 
     var quote: SwapQuote {
         guard let from = fromToken,
               let to = toToken,
               let amount = parsedFromAmount,
-              amount > 0,
-              let built = marketService.buildQuote(
-                from: from,
-                to: to,
-                amountIn: amount,
-                slippagePercent: slippagePercent,
-                mevProtectionEnabled: mevProtectionEnabled
-              )
-        else {
+              amount > 0 else {
             return SwapQuote.empty
         }
-        return built
+        if ChainConfig.usesTestnet,
+           let built = SepoliaSwapTokenCatalog.buildQuote(
+               from: from,
+               to: to,
+               amountIn: amount,
+               slippagePercent: slippagePercent,
+               mevProtectionEnabled: mevProtectionEnabled
+           ) {
+            return built
+        }
+        return SwapQuote.empty
+    }
+
+    var canExecuteOnChain: Bool {
+        guard let from = fromToken, let to = toToken else { return false }
+        return SepoliaSwapTokenCatalog.isOnChainPair(fromId: from.id, toId: to.id)
     }
 
     var hasValidQuote: Bool {
@@ -71,12 +129,34 @@ final class SwapViewModel {
     }
 
     var fromBalanceLabel: String {
-        guard let from = fromToken, let bal = from.walletBalance else { return "餘額 —" }
+        guard let from = fromToken else { return "餘額 —" }
+        if SepoliaSwapTokenCatalog.isUSDTAnchor(from.id) {
+            return "參考報價 · Sepolia 測試網"
+        }
+        guard let bal = from.walletBalance else { return "餘額 —" }
         return "餘額 \(formatAmount(bal)) \(from.symbol)"
     }
 
+    var swapDisabledReason: String? {
+        guard hasValidQuote else { return "請輸入交換數量" }
+        if isReferenceQuoteOnly { return nil }
+        guard canExecuteOnChain else {
+            return "請改選 ETH ↔ vUSDC 或 ETH → pufETH 以執行 Sepolia 鏈上交換"
+        }
+        guard let amount = parsedFromAmount, amount > 0 else { return "請輸入支付數量" }
+        guard let bal = fromToken?.walletBalance, bal >= amount else { return "支付代幣餘額不足" }
+        if fromToken?.id == "ethereum" {
+            let reserve = SepoliaSwapDemoConfig.gasReserveEther
+            if bal < amount + reserve { return "需預留約 \(formatAmount(reserve)) ETH 作 Gas" }
+        }
+        return nil
+    }
+
     func setMaxFromAmount() {
-        guard let bal = fromToken?.walletBalance else { return }
+        guard var bal = fromToken?.walletBalance else { return }
+        if fromToken?.id == "ethereum" {
+            bal = max(0, bal - SepoliaSwapDemoConfig.gasReserveEther)
+        }
         updateFromAmount(formatAmount(bal))
     }
 
@@ -112,12 +192,54 @@ final class SwapViewModel {
         lastEdited = .from
     }
 
+    func tokensForPicker(excludingTokenId: String?) -> [MarketToken] {
+        SepoliaSwapTokenCatalog.sortForTokenPicker(
+            walletTokens.filter { $0.id != excludingTokenId }
+        )
+    }
+
     func allReceivableTokens() -> [MarketToken] {
-        CoinGeckoMarketService.cachedTokens()
+        tokensForPicker(excludingTokenId: fromToken?.id)
+    }
+
+    var fromTokensForPicker: [MarketToken] {
+        tokensForPicker(excludingTokenId: toToken?.id)
     }
 
     func onTokenChanged() {
         recalculateAmounts()
+    }
+
+    @MainActor
+    func executeSwap(walletAddress: String, walletPassword: String) async throws {
+        guard let from = fromToken, let to = toToken,
+              let amount = parsedFromAmount, amount > 0 else {
+            throw SepoliaSwapError.invalidAmount
+        }
+        isSwapping = true
+        defer { isSwapping = false }
+
+        let result = try await SepoliaSwapService.executeSwap(
+            fromTokenId: from.id,
+            toTokenId: to.id,
+            amountIn: amount,
+            walletAddress: walletAddress,
+            walletPassword: walletPassword,
+            slippagePercent: slippagePercent
+        )
+        var message = "鏈上已確認：\(formatAmount(result.amountIn)) \(result.fromSymbol) → \(formatAmount(result.amountOut)) \(result.toSymbol)"
+        if result.toSymbol == SepoliaSwapDemoConfig.vUSDCSymbol {
+            let bal = await SepoliaSwapService.vUSDCBalance(address: walletAddress)
+            message += "\n目前 vUSDC 餘額：\(formatAmount(bal))（演示代幣，請在錢包持倉查看）"
+        } else if result.toSymbol == PufferDemoConfig.pufETHSymbol {
+            let bal = await PufferStakingService.pufETHBalance(address: walletAddress)
+            message += "\n目前 pufETH 餘額：\(formatAmount(bal))"
+        }
+
+        lastSwapMessage = message
+        lastTxHash = result.transactionHash
+        NotificationCenter.default.post(name: .walletBalancesDidChange, object: nil)
+        await refreshTokens()
     }
 
     private var parsedFromAmount: Decimal? {

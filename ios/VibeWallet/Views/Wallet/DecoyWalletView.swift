@@ -37,6 +37,7 @@ struct DecoyWalletView: View {
             .sheet(isPresented: $showReceive) {
                 WalletTransferSheet(mode: .receive, isDecoy: true)
             }
+            .vibeNavigationPathAnimation(path)
         }
     }
 

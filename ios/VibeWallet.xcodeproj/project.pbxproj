@@ -17,6 +17,7 @@
 		A10000010000000000000008 /* AssetBalanceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* AssetBalanceCard.swift */; };
 		A1000001000000000000000A /* SovereigntyDefenseCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* SovereigntyDefenseCard.swift */; };
 		A1000001000000000000000B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* Assets.xcassets */; };
+		A1000001000000000000008E /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = C10000010000000000000001 /* secp256k1 */; };
 		A1000001000000000000000D /* HoldingAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* HoldingAsset.swift */; };
 		A10000010000000000000011 /* PortfolioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* PortfolioDetailView.swift */; };
 		A10000010000000000000012 /* SovereigntyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* SovereigntyDetailView.swift */; };
@@ -90,6 +91,71 @@
 		A10000010000000000000066 /* ContactRecoverySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000066 /* ContactRecoverySetupView.swift */; };
 		A10000010000000000000067 /* ContactRecoveryUnlockSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000067 /* ContactRecoveryUnlockSheet.swift */; };
 		A10000010000000000000068 /* DeckRulerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000068 /* DeckRulerBackground.swift */; };
+		A10000010000000000000069 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000069 /* AppDelegate.swift */; };
+		A1000001000000000000006A /* VibeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006A /* VibeComponents.swift */; };
+		A1000001000000000000006B /* VibeMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006B /* VibeMotion.swift */; };
+		A1000001000000000000006C /* VibeSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006C /* VibeSpacing.swift */; };
+		A1000001000000000000006D /* AppLifecycleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006D /* AppLifecycleCoordinator.swift */; };
+		A1000001000000000000006E /* BitrefillCatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006E /* BitrefillCatalogService.swift */; };
+		A1000001000000000000006F /* BitrefillCommerceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006F /* BitrefillCommerceService.swift */; };
+		A10000010000000000000070 /* BitrefillPaymentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000070 /* BitrefillPaymentService.swift */; };
+		A10000010000000000000071 /* EVMWeiFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000071 /* EVMWeiFormatter.swift */; };
+		A10000010000000000000072 /* HomeWeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000072 /* HomeWeatherService.swift */; };
+		A10000010000000000000073 /* MarketChartSeriesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000073 /* MarketChartSeriesService.swift */; };
+		A10000010000000000000074 /* ShoppingRemindersMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000074 /* ShoppingRemindersMonitor.swift */; };
+		A10000010000000000000075 /* VibeDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000075 /* VibeDeepLink.swift */; };
+		A10000010000000000000076 /* VibeNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000076 /* VibeNotificationService.swift */; };
+		A10000010000000000000077 /* WalletActivityMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000077 /* WalletActivityMonitor.swift */; };
+		A10000010000000000000078 /* PufferAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000078 /* PufferAPIService.swift */; };
+		A10000010000000000000079 /* PufferDemoConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000079 /* PufferDemoConfig.swift */; };
+		A1000001000000000000007A /* PufferDemoLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007A /* PufferDemoLedger.swift */; };
+		A1000001000000000000007B /* PufferStakingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007B /* PufferStakingService.swift */; };
+		A1000001000000000000007C /* SecretsReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007C /* SecretsReader.swift */; };
+		A1000001000000000000007D /* SepoliaSwapDemoConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007D /* SepoliaSwapDemoConfig.swift */; };
+		A1000001000000000000007E /* SepoliaSwapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007E /* SepoliaSwapService.swift */; };
+		A1000001000000000000007F /* SepoliaSwapTokenCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007F /* SepoliaSwapTokenCatalog.swift */; };
+		A10000010000000000000080 /* SepoliaExplorerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000080 /* SepoliaExplorerService.swift */; };
+		A10000010000000000000081 /* SepoliaFaucetOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000081 /* SepoliaFaucetOpener.swift */; };
+		A10000010000000000000082 /* ShoppingRemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000082 /* ShoppingRemindersService.swift */; };
+		A10000010000000000000083 /* EthereumRLP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000083 /* EthereumRLP.swift */; };
+		A10000010000000000000084 /* ExternalPrivateKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000084 /* ExternalPrivateKeyService.swift */; };
+		A10000010000000000000085 /* Keccak256.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000085 /* Keccak256.swift */; };
+		A10000010000000000000086 /* WalletTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000086 /* WalletTransferService.swift */; };
+		A10000010000000000000087 /* WalletBalanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000087 /* WalletBalanceStore.swift */; };
+		A10000010000000000000088 /* WalletOnChainHoldingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000088 /* WalletOnChainHoldingsService.swift */; };
+		A10000010000000000000089 /* WalletURLSafety.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000089 /* WalletURLSafety.swift */; };
+		A1000001000000000000008A /* WidgetSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008A /* WidgetSyncService.swift */; };
+		A1000001000000000000008B /* PufferStakingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008B /* PufferStakingViewModel.swift */; };
+		A1000001000000000000008C /* BitrefillNotebookStickerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008C /* BitrefillNotebookStickerButton.swift */; };
+		A1000001000000000000008D /* HomeShoppingStickyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008D /* HomeShoppingStickyCard.swift */; };
+		A1000001000000000000008E /* PufferNotebookStickerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008E /* PufferNotebookStickerButton.swift */; };
+		A1000001000000000000008F /* BitrefillCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008F /* BitrefillCheckoutView.swift */; };
+		A10000010000000000000090 /* BitrefillOrderStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000090 /* BitrefillOrderStatusView.swift */; };
+		A10000010000000000000091 /* BitrefillProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000091 /* BitrefillProductDetailView.swift */; };
+		A10000010000000000000092 /* BitrefillShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000092 /* BitrefillShopView.swift */; };
+		A10000010000000000000093 /* ExploreRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000093 /* ExploreRoute.swift */; };
+		A10000010000000000000094 /* PufferStakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000094 /* PufferStakingView.swift */; };
+		A10000010000000000000095 /* MarketRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000095 /* MarketRoute.swift */; };
+		A10000010000000000000096 /* MarketTokenDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000096 /* MarketTokenDetailView.swift */; };
+		A10000010000000000000097 /* NotebookPencilChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000097 /* NotebookPencilChartView.swift */; };
+		A10000010000000000000098 /* VibeNoteLaunchCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000098 /* VibeNoteLaunchCoverView.swift */; };
+		A10000010000000000000099 /* WalletPasswordSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000099 /* WalletPasswordSheet.swift */; };
+		A1000001000000000000009A /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009A /* WidgetSnapshot.swift */; };
+
+		A100000100000000000000B1 /* VibeWalletWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B1 /* VibeWalletWidgetBundle.swift */; };
+		A100000100000000000000B2 /* VibeWalletWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B2 /* VibeWalletWidget.swift */; };
+		A100000100000000000000B3 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009A /* WidgetSnapshot.swift */; };
+		A1000001000000000000009F /* VibeWalletWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A30000010000000000000002 /* VibeWalletWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A100000100000000000000C1 /* NotificationTestBench.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C1 /* NotificationTestBench.swift */; };
+		A100000100000000000000C2 /* WidgetPreviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C2 /* WidgetPreviewCard.swift */; };
+		A1000001000000000000009E /* EthereumLegacyTransactionRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009E /* EthereumLegacyTransactionRecovery.swift */; };
+		A100000100000000000000A0 /* EthereumMnemonicDerivation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A0 /* EthereumMnemonicDerivation.swift */; };
+		A100000100000000000000C3 /* PufferVaultMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C3 /* PufferVaultMath.swift */; };
+		A100000100000000000000C4 /* SigningUnlockCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C4 /* SigningUnlockCoordinator.swift */; };
+		A100000100000000000000C5 /* WalletBiometricUnlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C5 /* WalletBiometricUnlock.swift */; };
+		A100000100000000000000C6 /* PendingNonceCancellationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C6 /* PendingNonceCancellationService.swift */; };
+		A100000100000000000000C7 /* BitrefillProductImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C7 /* BitrefillProductImageView.swift */; };
+		A100000100000000000000C8 /* BitrefillProductImageURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C8 /* BitrefillProductImageURLs.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -176,11 +242,85 @@
 		A20000010000000000000066 /* ContactRecoverySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRecoverySetupView.swift; sourceTree = "<group>"; };
 		A20000010000000000000067 /* ContactRecoveryUnlockSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRecoveryUnlockSheet.swift; sourceTree = "<group>"; };
 		A20000010000000000000068 /* DeckRulerBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckRulerBackground.swift; sourceTree = "<group>"; };
+		A30000010000000000000002 /* VibeWalletWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = VibeWalletWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A30000010000000000000001 /* VibeWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VibeWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000010000000000000069 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/AppDelegate.swift; sourceTree = "<group>"; };
+		A2000001000000000000006A /* VibeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Design/VibeComponents.swift; sourceTree = "<group>"; };
+		A2000001000000000000006B /* VibeMotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Design/VibeMotion.swift; sourceTree = "<group>"; };
+		A2000001000000000000006C /* VibeSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Design/VibeSpacing.swift; sourceTree = "<group>"; };
+		A2000001000000000000006D /* AppLifecycleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/AppLifecycleCoordinator.swift; sourceTree = "<group>"; };
+		A2000001000000000000006E /* BitrefillCatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Bitrefill/BitrefillCatalogService.swift; sourceTree = "<group>"; };
+		A2000001000000000000006F /* BitrefillCommerceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Bitrefill/BitrefillCommerceService.swift; sourceTree = "<group>"; };
+		A20000010000000000000070 /* BitrefillPaymentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Bitrefill/BitrefillPaymentService.swift; sourceTree = "<group>"; };
+		A20000010000000000000071 /* EVMWeiFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/EVMWeiFormatter.swift; sourceTree = "<group>"; };
+		A20000010000000000000072 /* HomeWeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/HomeWeatherService.swift; sourceTree = "<group>"; };
+		A20000010000000000000073 /* MarketChartSeriesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/MarketChartSeriesService.swift; sourceTree = "<group>"; };
+		A20000010000000000000074 /* ShoppingRemindersMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Notifications/ShoppingRemindersMonitor.swift; sourceTree = "<group>"; };
+		A20000010000000000000075 /* VibeDeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Notifications/VibeDeepLink.swift; sourceTree = "<group>"; };
+		A20000010000000000000076 /* VibeNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Notifications/VibeNotificationService.swift; sourceTree = "<group>"; };
+		A20000010000000000000077 /* WalletActivityMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Notifications/WalletActivityMonitor.swift; sourceTree = "<group>"; };
+		A20000010000000000000078 /* PufferAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Puffer/PufferAPIService.swift; sourceTree = "<group>"; };
+		A20000010000000000000079 /* PufferDemoConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Puffer/PufferDemoConfig.swift; sourceTree = "<group>"; };
+		A2000001000000000000007A /* PufferDemoLedger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Puffer/PufferDemoLedger.swift; sourceTree = "<group>"; };
+		A2000001000000000000007B /* PufferStakingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Puffer/PufferStakingService.swift; sourceTree = "<group>"; };
+		A2000001000000000000007C /* SecretsReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/SecretsReader.swift; sourceTree = "<group>"; };
+		A2000001000000000000007D /* SepoliaSwapDemoConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Sepolia/SepoliaSwapDemoConfig.swift; sourceTree = "<group>"; };
+		A2000001000000000000007E /* SepoliaSwapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Sepolia/SepoliaSwapService.swift; sourceTree = "<group>"; };
+		A2000001000000000000007F /* SepoliaSwapTokenCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Sepolia/SepoliaSwapTokenCatalog.swift; sourceTree = "<group>"; };
+		A20000010000000000000080 /* SepoliaExplorerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/SepoliaExplorerService.swift; sourceTree = "<group>"; };
+		A20000010000000000000081 /* SepoliaFaucetOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/SepoliaFaucetOpener.swift; sourceTree = "<group>"; };
+		A20000010000000000000082 /* ShoppingRemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Shopping/ShoppingRemindersService.swift; sourceTree = "<group>"; };
+		A20000010000000000000083 /* EthereumRLP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/EthereumRLP.swift; sourceTree = "<group>"; };
+		A20000010000000000000084 /* ExternalPrivateKeyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/ExternalPrivateKeyService.swift; sourceTree = "<group>"; };
+		A20000010000000000000085 /* Keccak256.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/Keccak256.swift; sourceTree = "<group>"; };
+		A20000010000000000000086 /* WalletTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/WalletTransferService.swift; sourceTree = "<group>"; };
+		A20000010000000000000087 /* WalletBalanceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/WalletBalanceStore.swift; sourceTree = "<group>"; };
+		A20000010000000000000088 /* WalletOnChainHoldingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/WalletOnChainHoldingsService.swift; sourceTree = "<group>"; };
+		A20000010000000000000089 /* WalletURLSafety.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/WalletURLSafety.swift; sourceTree = "<group>"; };
+		A2000001000000000000008A /* WidgetSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Widget/WidgetSyncService.swift; sourceTree = "<group>"; };
+		A2000001000000000000008B /* PufferStakingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/ViewModels/PufferStakingViewModel.swift; sourceTree = "<group>"; };
+		A2000001000000000000008C /* BitrefillNotebookStickerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Components/BitrefillNotebookStickerButton.swift; sourceTree = "<group>"; };
+		A2000001000000000000008D /* HomeShoppingStickyCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Components/HomeShoppingStickyCard.swift; sourceTree = "<group>"; };
+		A2000001000000000000008E /* PufferNotebookStickerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Components/PufferNotebookStickerButton.swift; sourceTree = "<group>"; };
+		A2000001000000000000008F /* BitrefillCheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Explore/BitrefillCheckoutView.swift; sourceTree = "<group>"; };
+		A20000010000000000000090 /* BitrefillOrderStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Explore/BitrefillOrderStatusView.swift; sourceTree = "<group>"; };
+		A20000010000000000000091 /* BitrefillProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Explore/BitrefillProductDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000092 /* BitrefillShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Explore/BitrefillShopView.swift; sourceTree = "<group>"; };
+		A20000010000000000000093 /* ExploreRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Explore/ExploreRoute.swift; sourceTree = "<group>"; };
+		A20000010000000000000094 /* PufferStakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Explore/PufferStakingView.swift; sourceTree = "<group>"; };
+		A20000010000000000000095 /* MarketRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Market/MarketRoute.swift; sourceTree = "<group>"; };
+		A20000010000000000000096 /* MarketTokenDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Market/MarketTokenDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000097 /* NotebookPencilChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Market/NotebookPencilChartView.swift; sourceTree = "<group>"; };
+		A20000010000000000000098 /* VibeNoteLaunchCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Root/VibeNoteLaunchCoverView.swift; sourceTree = "<group>"; };
+		A20000010000000000000099 /* WalletPasswordSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Wallet/WalletPasswordSheet.swift; sourceTree = "<group>"; };
+		A2000001000000000000009A /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWalletShared/WidgetSnapshot.swift; sourceTree = "<group>"; };
+
+		A200000100000000000000B1 /* VibeWalletWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWalletWidgetBundle.swift; sourceTree = "<group>"; };
+		A200000100000000000000B2 /* VibeWalletWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWalletWidget.swift; sourceTree = "<group>"; };
+		A200000100000000000000C1 /* NotificationTestBench.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Notifications/NotificationTestBench.swift; sourceTree = "<group>"; };
+		A200000100000000000000C2 /* WidgetPreviewCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Settings/WidgetPreviewCard.swift; sourceTree = "<group>"; };
+		A30000010000000000000002 /* VibeWalletWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = VibeWalletWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000001000000000000009E /* EthereumLegacyTransactionRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/EthereumLegacyTransactionRecovery.swift; sourceTree = "<group>"; };
+		A200000100000000000000A0 /* EthereumMnemonicDerivation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/EthereumMnemonicDerivation.swift; sourceTree = "<group>"; };
+		A200000100000000000000C3 /* PufferVaultMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Puffer/PufferVaultMath.swift; sourceTree = "<group>"; };
+		A200000100000000000000C4 /* SigningUnlockCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/SigningUnlockCoordinator.swift; sourceTree = "<group>"; };
+		A200000100000000000000C5 /* WalletBiometricUnlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/WalletBiometricUnlock.swift; sourceTree = "<group>"; };
+		A200000100000000000000C6 /* PendingNonceCancellationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Wallet/PendingNonceCancellationService.swift; sourceTree = "<group>"; };
+		A200000100000000000000C7 /* BitrefillProductImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Views/Components/BitrefillProductImageView.swift; sourceTree = "<group>"; };
+		A200000100000000000000C8 /* BitrefillProductImageURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeWallet/Services/Bitrefill/BitrefillProductImageURLs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A40000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001000000000000008E /* secp256k1 in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A40000010000000000000002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -190,9 +330,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A50000010000000000000023 /* VibeWalletWidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000B1 /* VibeWalletWidgetBundle.swift */,
+				A200000100000000000000B2 /* VibeWalletWidget.swift */,
+			);
+			path = VibeWalletWidgetExtension;
+			sourceTree = "<group>";
+		};
 		A50000010000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				A50000010000000000000023 /* VibeWalletWidgetExtension */,
 				A50000010000000000000002 /* VibeWallet */,
 				A50000010000000000000003 /* Products */,
 			);
@@ -217,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				A30000010000000000000001 /* VibeWallet.app */,
+				A30000010000000000000002 /* VibeWalletWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -472,17 +623,40 @@
 			buildConfigurationList = A80000010000000000000003 /* Build configuration list for PBXNativeTarget "VibeWallet" */;
 			buildPhases = (
 				A70000010000000000000001 /* Sources */,
+				A70000010000000000000006 /* Embed Foundation Extensions */,
 				A40000010000000000000001 /* Frameworks */,
 				A70000010000000000000002 /* Resources */,
+				A70000010000000000000007 /* Copy Secrets.plist */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A60000010000000000000003 /* PBXTargetDependency */,
+			);
+			packageProductDependencies = (
+				C10000010000000000000001 /* secp256k1 */,
 			);
 			name = VibeWallet;
 			productName = VibeWallet;
 			productReference = A30000010000000000000001 /* VibeWallet.app */;
 			productType = "com.apple.product-type.application";
+		};
+
+		A60000010000000000000002 /* VibeWalletWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000010000000000000004 /* Build configuration list for PBXNativeTarget "VibeWalletWidgetExtension" */;
+			buildPhases = (
+				A70000010000000000000004 /* Sources */,
+				A40000010000000000000002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VibeWalletWidgetExtension;
+			productName = VibeWalletWidgetExtension;
+			productReference = A30000010000000000000002 /* VibeWalletWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -509,11 +683,15 @@
 				"zh-Hant",
 			);
 			mainGroup = A50000010000000000000001;
+			packageReferences = (
+				B10000010000000000000001 /* XCRemoteSwiftPackageReference "secp256k1" */,
+			);
 			productRefGroup = A50000010000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				A60000010000000000000001 /* VibeWallet */,
+				A60000010000000000000002 /* VibeWalletWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -531,6 +709,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A70000010000000000000007 /* Copy Secrets.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/VibeWallet/Config/Secrets.plist",
+				"$(SRCROOT)/VibeWallet/Config/Secrets.plist.example",
+			);
+			name = "Copy Secrets.plist";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Config/Secrets.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nSRC=\"${SRCROOT}/VibeWallet/Config/Secrets.plist\"\nEXAMPLE=\"${SRCROOT}/VibeWallet/Config/Secrets.plist.example\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Config\"\nmkdir -p \"${DEST}\"\nif [ -f \"${SRC}\" ]; then\n  cp \"${SRC}\" \"${DEST}/Secrets.plist\"\nelif [ -f \"${EXAMPLE}\" ]; then\n  cp \"${EXAMPLE}\" \"${DEST}/Secrets.plist\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A70000010000000000000001 /* Sources */ = {
@@ -616,6 +815,77 @@
 				A10000010000000000000066 /* ContactRecoverySetupView.swift in Sources */,
 				A10000010000000000000067 /* ContactRecoveryUnlockSheet.swift in Sources */,
 				A10000010000000000000068 /* DeckRulerBackground.swift in Sources */,
+				A100000100000000000000C4 /* SigningUnlockCoordinator.swift in Sources */,
+				A100000100000000000000C5 /* WalletBiometricUnlock.swift in Sources */,
+				A100000100000000000000C6 /* PendingNonceCancellationService.swift in Sources */,
+				A100000100000000000000C7 /* BitrefillProductImageView.swift in Sources */,
+				A100000100000000000000C8 /* BitrefillProductImageURLs.swift in Sources */,
+				A100000100000000000000C3 /* PufferVaultMath.swift in Sources */,
+				A100000100000000000000A0 /* EthereumMnemonicDerivation.swift in Sources */,
+				A1000001000000000000009E /* EthereumLegacyTransactionRecovery.swift in Sources */,
+				A10000010000000000000069 /* AppDelegate.swift in Sources */,
+				A1000001000000000000006A /* VibeComponents.swift in Sources */,
+				A1000001000000000000006B /* VibeMotion.swift in Sources */,
+				A1000001000000000000006C /* VibeSpacing.swift in Sources */,
+				A1000001000000000000006D /* AppLifecycleCoordinator.swift in Sources */,
+				A1000001000000000000006E /* BitrefillCatalogService.swift in Sources */,
+				A1000001000000000000006F /* BitrefillCommerceService.swift in Sources */,
+				A10000010000000000000070 /* BitrefillPaymentService.swift in Sources */,
+				A10000010000000000000071 /* EVMWeiFormatter.swift in Sources */,
+				A10000010000000000000072 /* HomeWeatherService.swift in Sources */,
+				A10000010000000000000073 /* MarketChartSeriesService.swift in Sources */,
+				A10000010000000000000074 /* ShoppingRemindersMonitor.swift in Sources */,
+				A10000010000000000000075 /* VibeDeepLink.swift in Sources */,
+				A10000010000000000000076 /* VibeNotificationService.swift in Sources */,
+				A10000010000000000000077 /* WalletActivityMonitor.swift in Sources */,
+				A10000010000000000000078 /* PufferAPIService.swift in Sources */,
+				A10000010000000000000079 /* PufferDemoConfig.swift in Sources */,
+				A1000001000000000000007A /* PufferDemoLedger.swift in Sources */,
+				A1000001000000000000007B /* PufferStakingService.swift in Sources */,
+				A1000001000000000000007C /* SecretsReader.swift in Sources */,
+				A1000001000000000000007D /* SepoliaSwapDemoConfig.swift in Sources */,
+				A1000001000000000000007E /* SepoliaSwapService.swift in Sources */,
+				A1000001000000000000007F /* SepoliaSwapTokenCatalog.swift in Sources */,
+				A10000010000000000000080 /* SepoliaExplorerService.swift in Sources */,
+				A10000010000000000000081 /* SepoliaFaucetOpener.swift in Sources */,
+				A10000010000000000000082 /* ShoppingRemindersService.swift in Sources */,
+				A10000010000000000000083 /* EthereumRLP.swift in Sources */,
+				A10000010000000000000084 /* ExternalPrivateKeyService.swift in Sources */,
+				A10000010000000000000085 /* Keccak256.swift in Sources */,
+				A10000010000000000000086 /* WalletTransferService.swift in Sources */,
+				A10000010000000000000087 /* WalletBalanceStore.swift in Sources */,
+				A10000010000000000000088 /* WalletOnChainHoldingsService.swift in Sources */,
+				A10000010000000000000089 /* WalletURLSafety.swift in Sources */,
+				A1000001000000000000008A /* WidgetSyncService.swift in Sources */,
+				A1000001000000000000008B /* PufferStakingViewModel.swift in Sources */,
+				A1000001000000000000008C /* BitrefillNotebookStickerButton.swift in Sources */,
+				A1000001000000000000008D /* HomeShoppingStickyCard.swift in Sources */,
+				A1000001000000000000008E /* PufferNotebookStickerButton.swift in Sources */,
+				A1000001000000000000008F /* BitrefillCheckoutView.swift in Sources */,
+				A10000010000000000000090 /* BitrefillOrderStatusView.swift in Sources */,
+				A10000010000000000000091 /* BitrefillProductDetailView.swift in Sources */,
+				A10000010000000000000092 /* BitrefillShopView.swift in Sources */,
+				A10000010000000000000093 /* ExploreRoute.swift in Sources */,
+				A10000010000000000000094 /* PufferStakingView.swift in Sources */,
+				A10000010000000000000095 /* MarketRoute.swift in Sources */,
+				A10000010000000000000096 /* MarketTokenDetailView.swift in Sources */,
+				A10000010000000000000097 /* NotebookPencilChartView.swift in Sources */,
+				A10000010000000000000098 /* VibeNoteLaunchCoverView.swift in Sources */,
+				A10000010000000000000099 /* WalletPasswordSheet.swift in Sources */,
+				A1000001000000000000009A /* WidgetSnapshot.swift in Sources */,
+				A100000100000000000000C1 /* NotificationTestBench.swift in Sources */,
+				A100000100000000000000C2 /* WidgetPreviewCard.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A70000010000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A100000100000000000000B1 /* VibeWalletWidgetBundle.swift in Sources */,
+				A100000100000000000000B2 /* VibeWalletWidget.swift in Sources */,
+				A100000100000000000000B3 /* WidgetSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,6 +994,7 @@
 		AA0000010000000000000003 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = VibeWallet/VibeWallet.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -734,6 +1005,9 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Vibe Wallet";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "使用 Face ID 確認交換與簽名操作，並展示硬體級主權狀態。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "用於在首頁顯示您所在地區的即時天氣。";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "讀取「Vibe 購物」提醒清單，在首頁顯示購物清單並搜尋 Bitrefill 商品。";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "購物待辦與鏈上資產進出時推播提醒。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -757,6 +1031,7 @@
 		AA0000010000000000000004 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = VibeWallet/VibeWallet.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -767,6 +1042,9 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Vibe Wallet";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "使用 Face ID 確認交換與簽名操作，並展示硬體級主權狀態。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "用於在首頁顯示您所在地區的即時天氣。";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "讀取「Vibe 購物」提醒清單，在首頁顯示購物清單並搜尋 Bitrefill 商品。";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "購物待辦與鏈上資產進出時推播提醒。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -782,6 +1060,59 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+
+		AA0000010000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = VibeWalletWidgetExtension/VibeWalletWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vibe Widget";
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vibe.wallet.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = VibeWalletWidgetExtension/VibeWalletWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vibe Widget";
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vibe.wallet.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -808,7 +1139,36 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+
+		A80000010000000000000004 /* Build configuration list for PBXNativeTarget "VibeWalletWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000005 /* Debug */,
+				AA0000010000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B10000010000000000000001 /* XCRemoteSwiftPackageReference "secp256k1" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C10000010000000000000001 /* secp256k1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000010000000000000001 /* XCRemoteSwiftPackageReference "secp256k1" */;
+			productName = secp256k1;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A90000010000000000000001 /* Project object */;
 }

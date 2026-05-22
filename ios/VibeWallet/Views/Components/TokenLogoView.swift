@@ -36,10 +36,9 @@ struct TokenLogoView: View {
     @ViewBuilder
     private func logoCircle(tokenId: String, symbol: String, dimension: CGFloat) -> some View {
         Group {
-            let catalogId = TokenLogoCatalog.tokenId(fromCoingeckoId: tokenId)
+            let catalogId = TokenLogoCatalog.resolveLogoTokenId(tokenId)
             if let url = TokenLogoCatalog.url(from: imageURL)
-                ?? TokenLogoCatalog.url(for: catalogId)
-                ?? TokenLogoCatalog.url(for: tokenId) {
+                ?? TokenLogoCatalog.url(for: catalogId) {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .success(let image):
